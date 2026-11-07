@@ -1,828 +1,1799 @@
 
+
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <meta name="theme-color" content="#f6f8fa">
+
 <title>MEUBANCO</title>
+
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
 <style>
+
 :root{
-  --bg:#f6f8fa;--white:#fff;--ink:#263445;
-  --muted:#718093;--line:#e3e8ed;--accent:#285d76;
-  --soft:#eaf2f6;--red:#b74747;--green:#27805b
+
+--bg:#f6f8fa;--white:#fff;--ink:#263445;
+
+--muted:#718093;--line:#e3e8ed;--accent:#285d76;
+
+--soft:#eaf2f6;--red:#b74747;--green:#27805b
+
 }
+
 *{box-sizing:border-box}
+
 body{margin:0;background:var(--bg);color:var(--ink);
+
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+
 button,input,select,textarea{font:inherit}
+
 button{cursor:pointer}
+
 button:disabled{opacity:.4;cursor:default}
+
 header{background:white;border-bottom:1px solid var(--line);
+
 padding:17px 24px;display:flex;align-items:center;
+
 justify-content:space-between;gap:10px}
+
 .logo{font-size:21px;font-weight:800;letter-spacing:1px}
+
 .logo small{display:block;color:var(--muted);font-size:11px;
+
 font-weight:400;letter-spacing:0}
+
 nav{display:flex;gap:5px;flex-wrap:wrap}
+
 nav button{border:0;background:transparent;color:var(--muted);
+
 padding:10px;border-radius:8px;font-size:13px}
+
 nav button.active{background:var(--soft);color:var(--accent);font-weight:700}
+
 main{max-width:1250px;margin:auto;padding:26px 18px 70px}
+
 h1{font-size:26px;letter-spacing:-.5px;margin:0 0 5px}
+
 h2{font-size:18px;margin:0 0 16px}
+
 p{line-height:1.6}
+
 .sub{color:var(--muted);font-size:13px;margin-bottom:23px}
+
 .card{background:white;border:1px solid var(--line);
+
 border-radius:14px;padding:19px;margin-bottom:15px}
+
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
 .two{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
 .metric{background:white;border:1px solid var(--line);
+
 border-radius:13px;padding:17px}
+
 .metric strong{font-size:29px;display:block;margin:6px 0}
+
 .small{color:var(--muted);font-size:12px}
+
 .btn{padding:10px 13px;border-radius:9px;border:1px solid var(--line);
+
 background:white;color:var(--ink);font-weight:600;font-size:13px}
+
 .btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+
 .btn.danger{color:var(--red)}
+
 .row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+
 .between{justify-content:space-between}
+
 input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);
+
 border-radius:9px;background:white;color:var(--ink)}
+
 textarea{min-height:90px;resize:vertical}
+
 label{display:block;color:var(--muted);font-size:12px;
+
 font-weight:600;margin-bottom:6px}
+
 .field{margin-bottom:12px}
+
 .filters{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
 .item{padding:15px 0;border-bottom:1px solid var(--line)}
+
 .item:last-child{border:0}
+
 .item h3{font-size:15px;margin:0}
+
 .preview{color:var(--muted);font-size:13px;line-height:1.5;
+
 display:-webkit-box;-webkit-line-clamp:2;
+
 -webkit-box-orient:vertical;overflow:hidden}
+
 .tag{display:inline-block;background:#f0f3f6;padding:5px 9px;
+
 border-radius:20px;font-size:11px;margin:3px 3px 3px 0}
+
 .good{background:#e7f5ed;color:var(--green)}
+
 .bad{background:#ffeded;color:var(--red)}
+
 .warn{background:#fff4d9;color:#966515}
+
 .check{width:19px;height:19px;accent-color:var(--accent)}
+
 .bar{height:11px;border-radius:15px;background:#edf1f4;overflow:hidden}
+
 .fill{height:100%;background:#438da4}
+
 .chartrow{display:grid;grid-template-columns:130px 1fr 70px;
+
 gap:12px;align-items:center;margin:13px 0;font-size:12px}
+
 .modal-bg{position:fixed;inset:0;background:#17233088;
+
 z-index:10;display:flex;align-items:center;justify-content:center;padding:13px}
+
 .modal{width:min(100%,980px);max-height:94vh;overflow:auto;background:white;
+
 border-radius:16px;padding:22px}
+
 .question{white-space:pre-wrap;line-height:1.7;font-size:15px}
+
 .alternative{padding:12px;border:1px solid var(--line);
+
 border-radius:9px;margin:8px 0;white-space:pre-wrap;font-size:14px}
+
 .qimage{max-width:100%;max-height:450px;object-fit:contain;
+
 display:block;margin:12px 0;border-radius:9px}
+
 .empty{text-align:center;padding:40px;color:var(--muted)}
+
 .notice{background:var(--soft);padding:13px;border-radius:10px;
+
 font-size:13px;color:#416478;line-height:1.6}
+
 .hidden{display:none}
+
 @media(max-width:800px){
+
 header{display:block;padding:13px}
+
 nav{margin-top:12px;overflow-x:auto;flex-wrap:nowrap}
+
 nav button{white-space:nowrap}
+
 main{padding:18px 12px}
+
 .grid,.two{grid-template-columns:repeat(2,1fr)}
+
 .filters{grid-template-columns:repeat(2,1fr)}
+
 .modal{padding:14px}
+
 }
+
 @media(max-width:480px){
+
 .grid,.two,.filters{grid-template-columns:1fr}
+
 .chartrow{grid-template-columns:95px 1fr 65px}
+
 }
+
 </style>
+
 </head>
+
 <body>
 
 <header>
+
 <div class="logo">MEUBANCO
+
 <small>Meu banco pessoal de questões</small></div>
+
 <nav id="nav"></nav>
+
 </header>
 
 <main id="app"></main>
+
 <div id="modalRoot"></div>
+
 <input id="importFile" type="file" accept=".zip,.json" multiple hidden>
 
 <script>
+
 "use strict";
 
 const $=id=>document.getElementById(id);
+
 const clean=v=>String(v??"").trim();
+
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
+
 "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+
 }[c]));
+
 const uuid=()=>crypto.randomUUID();
 
 const areas=[
+
 "Clínica Médica","Cirurgia Geral",
+
 "Ginecologia e Obstetrícia","Pediatria",
+
 "Medicina Preventiva","Outras"
+
 ];
 
 const tabs=[
+
 ["inicio","Início"],["provas","Provas"],
+
 ["questoes","Questões"],["colecoes","Coleções"],
+
 ["desempenho","Desempenho"],["backup","Importar / Backup"]
+
 ];
 
 let db;
+
 let provas=[],questoes=[],colecoes=[],imagens=[];
+
 let tela="inicio";
+
 let selecionadas=new Set();
+
 let filtro={prova:"",area:"",tema:"",sub:"",status:"",busca:""};
+
 let relatorioProva="";
+
 let questaoAberta=null;
 
 function aviso(t){alert(t)}
 
 function banco(){
+
 return new Promise((ok,erro)=>{
+
 let r=indexedDB.open("MEUBANCO_V3",1);
+
 r.onupgradeneeded=()=>{
+
 let d=r.result;
+
 ["provas","questoes","colecoes","imagens"].forEach(n=>{
+
 if(!d.objectStoreNames.contains(n))
+
 d.createObjectStore(n,{keyPath:"id"});
+
 });
+
 };
+
 r.onsuccess=()=>ok(r.result);
+
 r.onerror=()=>erro(r.error);
+
 });
+
 }
 
 function todos(t){
+
 return new Promise((ok,erro)=>{
+
 let r=db.transaction(t).objectStore(t).getAll();
+
 r.onsuccess=()=>ok(r.result);
+
 r.onerror=()=>erro(r.error);
+
 });
+
 }
+
 function salvar(t,obj){
+
 return new Promise((ok,erro)=>{
+
 let tr=db.transaction(t,"readwrite");
+
 tr.objectStore(t).put(obj);
+
 tr.oncomplete=ok;tr.onerror=()=>erro(tr.error);
+
 });
+
 }
+
 function excluir(t,id){
+
 return new Promise((ok,erro)=>{
+
 let tr=db.transaction(t,"readwrite");
+
 tr.objectStore(t).delete(id);
+
 tr.oncomplete=ok;tr.onerror=()=>erro(tr.error);
+
 });
+
 }
+
 function limpar(t){
+
 return new Promise((ok,erro)=>{
+
 let tr=db.transaction(t,"readwrite");
+
 tr.objectStore(t).clear();
+
 tr.oncomplete=ok;tr.onerror=()=>erro(tr.error);
+
 });
+
 }
+
 async function atualizar(){
+
 [provas,questoes,colecoes,imagens]=await Promise.all(
+
 ["provas","questoes","colecoes","imagens"].map(todos));
+
 render();
+
 }
 
 function mudar(t){
+
 tela=t;selecionadas.clear();render();
+
 window.scrollTo(0,0);
+
 }
+
 function cabecalho(t,s){
+
 return `<h1>${esc(t)}</h1><div class="sub">${esc(s)}</div>`;
+
 }
+
 function nomeProva(p){
+
 return p?`${p.nome} ${p.ano||""}`.trim():"Prova";
+
 }
+
 function provaDe(q){
+
 return provas.find(p=>p.id===q.provaId);
+
 }
+
 function tituloQ(q){
+
 return `${nomeProva(provaDe(q))} — Q${q.numero}`;
+
 }
+
 function situacao(q){
+
 return q.situacao==="acertei"?"Acertei":
+
 q.situacao==="errei"?"Errei":
+
 q.situacao==="anulada"?"Anulada":"Não fiz";
+
 }
+
 function etiqueta(q){
+
 let c=q.situacao==="acertei"?"good":
+
 q.situacao==="errei"?"bad":
+
 q.situacao==="anulada"?"warn":"";
+
 return `<span class="tag ${c}">${situacao(q)}</span>`;
+
 }
+
 function desempenho(lista){
+
 let feitas=lista.filter(q=>["acertei","errei"].includes(q.situacao));
+
 let acertos=feitas.filter(q=>q.situacao==="acertei").length;
+
 let erros=feitas.length-acertos;
+
 return {
+
 total:lista.length,feitas:feitas.length,acertos,erros,
+
 nao:lista.filter(q=>q.situacao==="nao_fiz").length,
+
 anuladas:lista.filter(q=>q.situacao==="anulada").length,
+
 indice:feitas.length?acertos/feitas.length*100:null
+
 };
+
 }
+
 function percentual(n){
+
 return n===null?"—":n.toFixed(1).replace(".",",")+"%";
+
 }
+
 function indicadores(s){
+
 return `<div class="grid" style="margin-bottom:17px">
+
 <div class="metric"><span class="small">TOTAL DE QUESTÕES</span><strong>${s.total}</strong></div>
+
 <div class="metric"><span class="small">QUESTÕES FEITAS</span><strong>${s.feitas}</strong></div>
+
 <div class="metric"><span class="small">ACERTOS / ERROS</span><strong>${s.acertos} / ${s.erros}</strong></div>
+
 <div class="metric"><span class="small">ÍNDICE DE ACERTOS</span><strong>${percentual(s.indice)}</strong></div>
+
 </div>`;
+
 }
+
 function render(){
+
 $("nav").innerHTML=tabs.map(([k,v])=>
+
 `<button class="${tela===k?"active":""}" onclick="mudar('${k}')">${v}</button>`
+
 ).join("");
+
 let views={
+
 inicio:inicio,provas:telaProvas,questoes:telaQuestoes,
+
 colecoes:telaColecoes,desempenho:telaDesempenho,backup:telaBackup
+
 };
+
 $("app").innerHTML=views[tela]();
+
 }
 
 function inicio(){
+
 return cabecalho("Minha biblioteca","Organize questões por prova e assunto.")+
+
 indicadores(desempenho(questoes))+
+
 `<div class="two">
+
 <div class="card">
+
 <h2>Minhas provas</h2>
+
 ${provas.length?provas.map(p=>
+
 `<div class="item row between">
+
 <div><b>${esc(nomeProva(p))}</b><div class="small">
+
 ${questoes.filter(q=>q.provaId===p.id).length} questões
+
 </div></div>
+
 <button class="btn" onclick="abrirProva('${p.id}')">Abrir</button>
+
 </div>`).join(""):'<p class="small">Nenhuma prova importada.</p>'}
+
 </div>
+
 <div class="card">
+
 <h2>O que deseja fazer?</h2>
+
 <p>Importe provas, aprove ou altere os temas sugeridos e reúna questões semelhantes para estudar.</p>
+
 <div class="row">
+
 <button class="btn primary" onclick="mudar('backup')">Importar prova</button>
+
 <button class="btn" onclick="mudar('questoes')">Pesquisar questões</button>
+
 </div>
+
 </div></div>`;
+
 }
 
 function telaProvas(){
+
 return cabecalho("Provas","Abra uma prova completa ou consulte suas questões.")+
+
 `<div class="card">
+
 ${provas.length?provas.map(p=>{
+
 let lista=questoes.filter(q=>q.provaId===p.id);
+
 let s=desempenho(lista);
+
 return `<div class="item row between">
+
 <div><h3>${esc(nomeProva(p))}</h3>
+
 <div class="small">${s.total} questões · ${s.feitas} feitas · ${percentual(s.indice)} de acertos</div></div>
+
 <div class="row">
+
 <button class="btn" onclick="abrirProva('${p.id}')">Ver prova</button>
+
 <button class="btn danger" onclick="apagarProva('${p.id}')">Excluir</button>
+
 </div></div>`;
+
 }).join(""):'<div class="empty">Nenhuma prova importada.</div>'}
+
 </div>`;
+
 }
 
 function abrirProva(id){
+
 filtro={prova:id,area:"",tema:"",sub:"",status:"",busca:""};
+
 mudar("questoes");
+
 filtro.prova=id;render();
+
 }
+
 function opcao(lista,valor,padrao="Todos"){
+
 return `<option value="">${padrao}</option>`+
+
 [...new Set(lista.filter(Boolean))].sort().map(v=>
+
 `<option value="${esc(v)}" ${v===valor?"selected":""}>${esc(v)}</option>`
+
 ).join("");
+
 }
+
 function filtradas(){
+
 return questoes.filter(q=>
+
 (!filtro.prova||q.provaId===filtro.prova)&&
+
 (!filtro.area||q.grande_area===filtro.area)&&
+
 (!filtro.tema||q.tema_geral===filtro.tema)&&
+
 (!filtro.sub||q.tema_especifico===filtro.sub)&&
+
 (!filtro.status||q.situacao===filtro.status)&&
+
 (!filtro.busca||
+
 [q.enunciado,q.tema_geral,q.tema_especifico,
+
 ...Object.values(q.alternativas||{})].join(" ")
+
 .toLowerCase().includes(filtro.busca.toLowerCase()))
+
 ).sort((a,b)=>nomeProva(provaDe(a)).localeCompare(nomeProva(provaDe(b)))||
+
 Number(a.numero)-Number(b.numero));
+
 }
+
 function mudarFiltro(k,v){
+
 filtro[k]=v;
+
 if(k==="area"){filtro.tema="";filtro.sub=""}
+
 if(k==="tema")filtro.sub="";
+
 render();
+
 }
+
 function limparFiltros(){
+
 filtro={prova:"",area:"",tema:"",sub:"",status:"",busca:""};
+
 render();
+
 }
+
 function linhaQ(q){
+
 return `<div class="item">
+
 <div class="row between">
+
 <div class="row">
+
 <input class="check" type="checkbox" style="width:auto"
+
 ${selecionadas.has(q.id)?"checked":""}
+
 onchange="selecionar('${q.id}',this.checked)">
+
 <div>
+
 <h3>${esc(tituloQ(q))}</h3>
+
 <span class="tag">${esc(q.grande_area||"Sem área")}</span>
+
 <span class="tag">${esc(q.tema_geral||"Sem tema")}</span>
+
 ${q.tema_especifico?`<span class="tag">${esc(q.tema_especifico)}</span>`:""}
+
 ${etiqueta(q)}
+
 ${!q.classificacao_aprovada?'<span class="tag warn">Tema sugerido</span>':""}
+
 </div></div>
+
 <button class="btn" onclick="abrirQuestao('${q.id}')">Abrir</button>
+
 </div>
+
 <p class="preview">${esc(q.enunciado)}</p>
+
 </div>`;
+
 }
+
 function telaQuestoes(){
+
 let lista=filtradas();
+
 let temas=questoes.filter(q=>!filtro.area||q.grande_area===filtro.area)
+
 .map(q=>q.tema_geral);
+
 let subs=questoes.filter(q=>
+
 (!filtro.area||q.grande_area===filtro.area)&&
+
 (!filtro.tema||q.tema_geral===filtro.tema))
+
 .map(q=>q.tema_especifico);
+
 return cabecalho("Banco de questões","Filtre por prova, área, tema e desempenho.")+
+
 `<div class="card">
+
 <div class="filters">
+
 <div><label>Prova</label><select onchange="mudarFiltro('prova',this.value)">
+
 <option value="">Todas as provas</option>
+
 ${provas.map(p=>`<option value="${p.id}" ${filtro.prova===p.id?"selected":""}>${esc(nomeProva(p))}</option>`).join("")}
+
 </select></div>
+
 <div><label>Grande área</label><select onchange="mudarFiltro('area',this.value)">
+
 ${opcao(areas,filtro.area)}</select></div>
+
 <div><label>Tema geral</label><select onchange="mudarFiltro('tema',this.value)">
+
 ${opcao(temas,filtro.tema)}</select></div>
+
 <div><label>Subtema</label><select onchange="mudarFiltro('sub',this.value)">
+
 ${opcao(subs,filtro.sub)}</select></div>
+
 <div><label>Desempenho</label><select onchange="mudarFiltro('status',this.value)">
+
 ${opcao(["acertei","errei","nao_fiz","anulada"],filtro.status)}
+
 </select></div>
+
 <div><label>Pesquisar texto</label>
+
 <input value="${esc(filtro.busca)}" placeholder="Palavra-chave"
+
 onchange="mudarFiltro('busca',this.value)"></div>
+
 </div>
+
 <div class="row between">
+
 <span class="small">${lista.length} questões encontradas</span>
+
 <div class="row">
+
 <button class="btn" onclick="limparFiltros()">Limpar filtros</button>
+
 <button class="btn" onclick="selecionarTodas()">Selecionar resultados</button>
+
 </div></div></div>
+
 <div class="card">
+
 <div class="row between">
+
 <b>${selecionadas.size} questões selecionadas</b>
+
 <div class="row">
+
 <button class="btn" onclick="classificarLote()" ${!selecionadas.size?"disabled":""}>Classificar em lote</button>
+
 <button class="btn" onclick="criarColecao()" ${!selecionadas.size?"disabled":""}>Criar coleção</button>
+
 <button class="btn primary" onclick="copiarSelecao()" ${!selecionadas.size?"disabled":""}>Copiar para ChatGPT</button>
+
 </div></div>
+
 ${lista.map(linhaQ).join("")||'<div class="empty">Nenhuma questão encontrada.</div>'}
+
 </div>`;
+
 }
+
 function selecionar(id,on){
+
 on?selecionadas.add(id):selecionadas.delete(id);
+
 render();
+
 }
+
 function selecionarTodas(){
+
 filtradas().forEach(q=>selecionadas.add(q.id));render();
+
 }
 
 function modal(html){
+
 $("modalRoot").innerHTML=`<div class="modal-bg" onclick="if(event.target===this)fechar()">
+
 <div class="modal">${html}</div></div>`;
+
 }
+
 function fechar(){
+
 $("modalRoot").innerHTML="";questaoAberta=null;
+
 }
+
 function abrirQuestao(id){
+
 let q=questoes.find(x=>x.id===id);
+
 if(!q)return;
+
 questaoAberta=id;
+
 let alts=Object.entries(q.alternativas||{}).map(([l,v])=>
+
 `<div class="alternative"><b>${esc(l)})</b> ${esc(v)}</div>`).join("");
+
 let imgs=(q.imagens||[]).map(i=>{
+
 let img=imagens.find(x=>x.id===i);
+
 return img?`<img class="qimage" src="${URL.createObjectURL(img.blob)}">`:"";
+
 }).join("");
+
 modal(`
+
 <div class="row between"><h2>${esc(tituloQ(q))}</h2>
+
 <button class="btn" onclick="fechar()">Fechar ×</button></div>
+
 <div class="two">
+
 <section>
+
 <div class="question">${esc(q.enunciado)}</div>
+
 ${alts}${imgs}
+
 <div class="notice">Gabarito: ${esc(q.gabarito||"Não informado")} · Sua resposta: ${esc(q.minha_resposta||"Não informada")}</div>
+
 </section>
+
 <section>
+
 <div class="card">
+
 <h2>Classificação</h2>
+
 <div class="field"><label>Grande área</label>
+
 <select id="edArea">${opcao(areas,q.grande_area,"Selecione")}</select></div>
+
 <div class="field"><label>Tema geral</label>
+
 <input id="edTema" list="temasExistentes" value="${esc(q.tema_geral)}">
+
 <datalist id="temasExistentes">
+
 ${[...new Set(questoes.map(x=>x.tema_geral).filter(Boolean))]
+
 .map(x=>`<option value="${esc(x)}">`).join("")}
+
 </datalist></div>
+
 <div class="field"><label>Subtema</label>
+
 <input id="edSub" value="${esc(q.tema_especifico)}"></div>
+
 <div class="field"><label>Desempenho</label>
+
 <select id="edStatus">
+
 ${[["nao_fiz","Não fiz"],["acertei","Acertei"],
+
 ["errei","Errei"],["anulada","Anulada"]].map(([v,t])=>
+
 `<option value="${v}" ${q.situacao===v?"selected":""}>${t}</option>`
+
 ).join("")}</select></div>
+
 <div class="field"><label>Minha resposta</label>
+
 <input id="edMinha" value="${esc(q.minha_resposta)}"></div>
+
 <div class="field"><label>Gabarito</label>
+
 <input id="edGab" value="${esc(q.gabarito)}"></div>
+
 <div class="field"><label>Anotações</label>
+
 <textarea id="edNotas">${esc(q.comentario)}</textarea></div>
+
 <div class="row">
+
 <button class="btn primary" onclick="salvarQuestao()">Salvar e aprovar tema</button>
+
 <button class="btn" onclick="copiarQuestoes(['${q.id}'])">Copiar prompt</button>
+
 <button class="btn" onclick="abrirChat(['${q.id}'])">ChatGPT</button>
+
 </div>
+
 </div></section></div>`);
+
 }
+
 async function salvarQuestao(){
+
 let q=questoes.find(x=>x.id===questaoAberta);
+
 if(!q)return;
+
 q={...q,grande_area:$("edArea").value,
+
 tema_geral:clean($("edTema").value),
+
 tema_especifico:clean($("edSub").value),
+
 situacao:$("edStatus").value,
+
 minha_resposta:clean($("edMinha").value),
+
 gabarito:clean($("edGab").value),
+
 comentario:$("edNotas").value,
+
 classificacao_aprovada:true};
+
 await salvar("questoes",q);fechar();await atualizar();
+
 }
+
 function classificarLote(){
+
 modal(`<div class="row between"><h2>Classificar em lote</h2>
+
 <button class="btn" onclick="fechar()">Fechar</button></div>
+
 <p class="small">${selecionadas.size} questões selecionadas. Campos vazios não serão modificados.</p>
+
 <div class="field"><label>Grande área</label>
+
 <select id="lArea">${opcao(areas,"","Não alterar")}</select></div>
+
 <div class="field"><label>Tema geral</label><input id="lTema"></div>
+
 <div class="field"><label>Subtema</label><input id="lSub"></div>
+
 <div class="field"><label>Desempenho</label>
+
 <select id="lStatus"><option value="">Não alterar</option>
+
 <option value="acertei">Acertei</option><option value="errei">Errei</option>
+
 <option value="nao_fiz">Não fiz</option><option value="anulada">Anulada</option>
+
 </select></div>
+
 <button class="btn primary" onclick="aplicarLote()">Aplicar alterações</button>`);
+
 }
+
 async function aplicarLote(){
+
 let a=$("lArea").value,t=clean($("lTema").value),
+
 s=clean($("lSub").value),st=$("lStatus").value;
+
 for(let q of questoes.filter(x=>selecionadas.has(x.id))){
+
 if(a)q.grande_area=a;
+
 if(t)q.tema_geral=t;
+
 if(s)q.tema_especifico=s;
+
 if(st)q.situacao=st;
+
 q.classificacao_aprovada=true;
+
 await salvar("questoes",q);
+
 }
+
 selecionadas.clear();fechar();await atualizar();
+
 }
 
 function promptQuestoes(ids){
+
 let lista=ids.map(id=>questoes.find(q=>q.id===id)).filter(Boolean);
+
 return `Quero estudar estas questões de residência médica em conjunto.
+
 Analise os temas centrais, padrões de cobrança, todas as alternativas
+
 e pegadinhas. Faça uma revisão aprofundada do conteúdo.
+
 Prepare um resumo para o caderno somente quando eu solicitar.
 
 `+lista.map(q=>`
+
 ${tituloQ(q)}
+
 ÁREA: ${q.grande_area}
+
 TEMA: ${q.tema_geral}
+
 SUBTEMA: ${q.tema_especifico}
+
 ENUNCIADO:
+
 ${q.enunciado}
+
 ${Object.entries(q.alternativas||{}).map(([a,v])=>a+") "+v).join("\n")}
+
 GABARITO: ${q.gabarito||"Não informado"}
+
 MINHA RESPOSTA: ${q.minha_resposta||"Não informada"}
+
 RESULTADO: ${situacao(q)}
+
 ${q.imagens?.length?"OBS.: Esta questão contém imagens, que devem ser anexadas separadamente.":""}
+
 `).join("\n---------------------\n");
+
 }
+
 async function copiarTexto(texto){
+
 try{
+
 await navigator.clipboard.writeText(texto);
+
 aviso("Prompt copiado. Cole na conversa desejada.");
+
 }catch{
+
 modal(`<h2>Copiar prompt</h2>
+
 <textarea style="height:300px" id="txtCopy">${esc(texto)}</textarea>
+
 <p>Selecione e copie o conteúdo.</p>
+
 <button class="btn" onclick="fechar()">Fechar</button>`);
+
 }
+
 }
+
 function copiarQuestoes(ids){copiarTexto(promptQuestoes(ids))}
+
 function copiarSelecao(){copiarQuestoes([...selecionadas])}
+
 function abrirChat(ids){
+
 copiarTexto(promptQuestoes(ids));
+
 window.open("https://chatgpt.com/","_blank");
+
 }
 
 async function criarColecao(){
+
 let nome=prompt("Nome da coleção:");
+
 if(!clean(nome))return;
+
 await salvar("colecoes",{
+
 id:"colecao-"+uuid(),nome:clean(nome),
+
 ids:[...selecionadas],created:new Date().toISOString()
+
 });
+
 selecionadas.clear();await atualizar();aviso("Coleção criada.");
+
 }
+
 function telaColecoes(){
+
 return cabecalho("Coleções de estudo","Reúna questões relacionadas de diferentes provas.")+
+
 `<div class="card">
+
 ${colecoes.map(c=>`<div class="item row between">
+
 <div><h3>${esc(c.nome)}</h3><div class="small">${c.ids.length} questões</div></div>
+
 <div class="row">
+
 <button class="btn" onclick="abrirColecao('${c.id}')">Abrir</button>
+
 <button class="btn danger" onclick="apagarColecao('${c.id}')">Excluir</button>
+
 </div></div>`).join("")||'<div class="empty">Nenhuma coleção criada.</div>'}
+
 </div>`;
+
 }
+
 function abrirColecao(id){
+
 let c=colecoes.find(x=>x.id===id);if(!c)return;
+
 let lista=c.ids.map(i=>questoes.find(q=>q.id===i)).filter(Boolean);
+
 modal(`<div class="row between"><h2>${esc(c.nome)}</h2>
+
 <button class="btn" onclick="fechar()">Fechar</button></div>
+
 <div class="row">
-<button class="btn primary" onclick="copiarQuestoes(${JSON.stringify(c.ids).replace(/"/g,"&quot;")})">Copiar questões</button>
-<button class="btn" onclick="abrirChat(${JSON.stringify(c.ids).replace(/"/g,"&quot;")})">ChatGPT</button>
+
+<button class="btn primary" onclick='copiarQuestoes(${JSON.stringify(c.ids)})'>Copiar questões</button>
+
+<button class="btn" onclick='abrirChat(${JSON.stringify(c.ids)})'>ChatGPT</button>
+
 </div>
+
 ${lista.map(q=>`<div class="item row between"><div>
+
 <b>${esc(tituloQ(q))}</b>
+
 <div class="small">${esc(q.tema_geral)}</div></div>
+
 <button class="btn" onclick="abrirQuestao('${q.id}')">Abrir</button>
+
 </div>`).join("")}`);
+
 }
+
 async function apagarColecao(id){
+
 if(!confirm("Excluir a coleção? As questões serão preservadas."))return;
+
 await excluir("colecoes",id);await atualizar();
+
 }
 
 function grupos(lista,campo){
+
 let mapa=new Map();
+
 for(let q of lista){
+
 let k=q[campo]||"Sem classificação";
+
 if(!mapa.has(k))mapa.set(k,[]);
+
 mapa.get(k).push(q);
+
 }
+
 return [...mapa].map(([nome,qs])=>({nome,...desempenho(qs)}))
+
 .sort((a,b)=>b.feitas-a.feitas);
+
 }
+
 function grafico(lista){
+
 return lista.map(g=>`<div class="chartrow">
+
 <div>${esc(g.nome)}<div class="small">${g.acertos} acertos · ${g.erros} erros · ${g.feitas} feitas</div></div>
+
 <div class="bar"><div class="fill" style="width:${g.indice||0}%"></div></div>
+
 <b>${percentual(g.indice)}</b></div>`).join("")||
+
 '<div class="empty">Nenhum dado disponível.</div>';
+
 }
+
 function telaDesempenho(){
+
 let lista=questoes.filter(q=>!relatorioProva||q.provaId===relatorioProva);
+
 let s=desempenho(lista);
+
 return cabecalho("Desempenho","Relatório de acertos e erros por área e assunto.")+
+
 `<div class="card">
+
 <label>Selecionar prova</label>
+
 <select onchange="relatorioProva=this.value;render()">
+
 <option value="">Todas as provas</option>
+
 ${provas.map(p=>`<option value="${p.id}" ${relatorioProva===p.id?"selected":""}>${esc(nomeProva(p))}</option>`).join("")}
+
 </select></div>
+
 ${indicadores(s)}
+
 <div class="notice" style="margin-bottom:16px">
+
 Questões feitas = acertos + erros. Índice = acertos ÷ questões feitas × 100.
+
 Não feitas e anuladas ficam fora do índice.
+
 </div>
+
 <div class="two">
+
 <div class="card"><h2>Por grande área</h2>${grafico(grupos(lista,"grande_area"))}</div>
+
 <div class="card"><h2>Por tema geral</h2>${grafico(grupos(lista,"tema_geral"))}</div>
+
 <div class="card"><h2>Por subtema</h2>${grafico(grupos(lista,"tema_especifico"))}</div>
+
 <div class="card"><h2>Principais erros</h2>
+
 ${grupos(lista,"tema_geral").filter(g=>g.erros)
+
 .sort((a,b)=>b.erros-a.erros).map(g=>
+
 `<div class="item row between"><span>${esc(g.nome)}</span>
+
 <b>${g.erros} erros / ${g.feitas} feitas</b></div>`).join("")||
+
 '<p>Sem erros registrados.</p>'}
+
 </div></div>
+
 <button class="btn primary" onclick="exportarCSV()">Exportar relatório CSV</button>`;
+
 }
+
 function exportarCSV(){
+
 let lista=questoes.filter(q=>!relatorioProva||q.provaId===relatorioProva);
+
 let linhas=[["Nível","Tema","Total","Feitas","Acertos","Erros","Não fiz","Anuladas","Índice"]];
+
 for(let [campo,nivel] of [
+
 ["grande_area","Grande área"],["tema_geral","Tema"],
+
 ["tema_especifico","Subtema"]]){
+
 for(let g of grupos(lista,campo))
+
 linhas.push([nivel,g.nome,g.total,g.feitas,g.acertos,g.erros,
+
 g.nao,g.anuladas,percentual(g.indice)]);
+
 }
+
 let csv="\ufeff"+linhas.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(";")).join("\n");
+
 baixar(new Blob([csv],{type:"text/csv;charset=utf-8"}),"MEUBANCO-RELATORIO.csv");
+
 }
+
 function baixar(blob,nome){
+
 let url=URL.createObjectURL(blob),a=document.createElement("a");
+
 a.href=url;a.download=nome;document.body.appendChild(a);
+
 a.click();a.remove();
+
 setTimeout(()=>URL.revokeObjectURL(url),60000);
+
+}
+
+// ====================================
+
+// CRIAR NOVA PROVA COM CHATGPT
+
+// ====================================
+
+function instrucoesNovaProva(){
+
+return `Vou anexar um PDF de uma prova de residência médica.
+
+Preciso que você prepare um arquivo ZIP compatível com meu aplicativo MEUBANCO.
+
+REGRAS OBRIGATÓRIAS
+
+1. Transcreva integralmente TODAS as questões, enunciados e alternativas.
+
+2. Preserve tabelas, figuras, gráficos, eletrocardiogramas e demais imagens. Extraia as imagens do PDF e coloque-as na pasta imagens/ dentro do ZIP.
+
+3. Crie um arquivo manifest.json na raiz do ZIP.
+
+4. O manifest.json deve conter:
+
+{
+
+  "versao": 3,
+
+  "prova": {
+
+    "id": "identificador-unico-da-prova",
+
+    "nome": "Nome da prova",
+
+    "ano": 2024
+
+  },
+
+  "questoes": [
+
+    {
+
+      "id": "identificador-unico-q1",
+
+      "numero": 1,
+
+      "enunciado": "Texto integral",
+
+      "alternativas": {
+
+        "A": "Texto integral da alternativa A",
+
+        "B": "Texto integral da alternativa B",
+
+        "C": "Texto integral da alternativa C",
+
+        "D": "Texto integral da alternativa D"
+
+      },
+
+      "grande_area": "Pediatria",
+
+      "tema_geral": "Cardiologia",
+
+      "tema_especifico": "Cardiopatias congênitas",
+
+      "classificacao_aprovada": false,
+
+      "situacao": "nao_fiz",
+
+      "gabarito": "",
+
+      "minha_resposta": "",
+
+      "comentario": "",
+
+      "imagens": []
+
+    }
+
+  ]
+
+}
+
+5. Grandes áreas padronizadas:
+
+Clínica Médica;
+
+Cirurgia Geral;
+
+Ginecologia e Obstetrícia;
+
+Pediatria;
+
+Medicina Preventiva.
+
+6. Use TEMAS GERAIS AMPLOS e reutilizáveis entre provas.
+
+Exemplo: Anatomia pélvica deve agrupar vascularização, ossos, ligamentos, inervação e relações anatômicas.
+
+Não crie categorias excessivamente específicas.
+
+Use o campo tema_especifico para detalhamentos.
+
+7. A classificação é apenas uma SUGESTÃO.
+
+Defina classificacao_aprovada como false.
+
+Eu decidirei a classificação definitiva no aplicativo.
+
+8. Caso minha resposta esteja identificável no PDF, compare-a com o gabarito e marque situacao como acertei ou errei.
+
+Se a questão tiver sido anulada, use anulada.
+
+Use nao_fiz somente quando houver evidência de que a questão não foi respondida.
+
+Se a marcação estiver ilegível ou não for possível determinar o desempenho, explique no campo comentario e não invente uma resposta.
+
+9. Não invente enunciados, alternativas, gabaritos ou imagens.
+
+Identifique trechos ilegíveis ou incompletos para conferência.
+
+10. Os caminhos de imagens no manifest.json devem corresponder aos arquivos reais do ZIP.
+
+Exemplo: "imagens/questao_12_ecg.png".
+
+11. Mantenha IDs estáveis e únicos para evitar duplicação quando a mesma prova for importada novamente.
+
+12. Confira a contagem de questões, o conteúdo dos arquivos e a integridade do ZIP antes de entregar.
+
+13. Entregue um único ZIP pronto para importar no MEUBANCO.
+
+IMPORTANTE:
+
+Eu quero transcrição integral, não resumo.
+
+Não preciso refazer as questões no aplicativo.
+
+Os temas são sugeridos e serão ajustados por mim.
+
+Quando terminar, disponibilize o ZIP para download.`;
+
+}
+
+function verInstrucoes(){
+
+modal(`<div class="row between">
+
+<h2>Instruções para o ChatGPT</h2>
+
+<button class="btn" onclick="fechar()">Fechar ×</button>
+
+</div>
+
+<p class="small">Copie estas instruções e envie junto com o PDF da nova prova.</p>
+
+<textarea id="promptNovaProva" style="height:340px">${esc(instrucoesNovaProva())}</textarea>
+
+<div class="row" style="margin-top:12px">
+
+<button class="btn primary" onclick="copiarInstrucoes()">Copiar instruções</button>
+
+<button class="btn" onclick="window.open('https://chatgpt.com/','_blank')">Abrir ChatGPT</button>
+
+</div>`);
+
+}
+
+function copiarInstrucoes(){
+
+copiarTexto(instrucoesNovaProva());
+
 }
 
 function telaBackup(){
+
 return cabecalho("Importar e fazer backup",
-"Transfira provas e coleções entre iPad, computador e outros dispositivos.")+
-`<div class="two">
+
+"Crie novas provas com ChatGPT e transfira seu banco entre aparelhos.")+
+
+`<div class="card">
+
+<h2>Criar nova prova com ChatGPT</h2>
+
+<p>Quando quiser acrescentar uma prova, copie as instruções e envie o PDF ao ChatGPT. Você receberá um ZIP para importar aqui.</p>
+
+<div class="row">
+
+<button class="btn primary" onclick="copiarInstrucoes()">Copiar instruções para o ChatGPT</button>
+
+<button class="btn" onclick="verInstrucoes()">Ver instruções completas</button>
+
+<button class="btn" onclick="window.open('https://chatgpt.com/','_blank')">Abrir ChatGPT</button>
+
+</div>
+
+</div>
+
+<div class="two">
+
 <div class="card">
+
 <h2>Importar provas</h2>
-<p>Envie um ZIP com manifest.json, textos e imagens ou um JSON compatível.</p>
+
+<p>Importe um ZIP com manifest.json, textos e imagens, ou um JSON compatível.</p>
+
 <button class="btn primary" onclick="$('importFile').click()">Selecionar ZIP / JSON</button>
-<p class="small">Provas importadas anteriormente não serão duplicadas.</p>
+
+<p class="small">Questões com o mesmo identificador não serão duplicadas.</p>
+
 </div>
+
 <div class="card">
+
 <h2>Backup completo</h2>
+
 <p>Exporte todas as provas, imagens, classificações, respostas e coleções.</p>
+
 <button class="btn primary" onclick="exportarBackup()">Exportar banco completo ZIP</button>
-<p class="small">Importe esse mesmo ZIP no outro aparelho para restaurar o banco.</p>
+
+<p class="small">Importe este ZIP no outro aparelho para restaurar o banco.</p>
+
 </div>
+
 </div>
-<div class="card"><h2>Importante</h2>
-<p>Os dados ficam no navegador deste aparelho (IndexedDB). Faça backup regularmente. Apagar os dados do navegador pode excluir o banco local.</p>
+
+<div class="card">
+
+<h2>Armazenamento</h2>
+
+<p>Os dados são salvos no navegador deste aparelho, por IndexedDB. Faça backup regularmente. Limpar os dados do navegador pode apagar o banco local.</p>
+
 <button class="btn danger" onclick="apagarTudo()">Apagar todo o banco deste aparelho</button>
+
 </div>`;
+
 }
 
 function normalizarProva(p){
+
 let nome=clean(p.nome||p.prova||"Prova");
+
 let ano=p.ano||"";
+
 let id=clean(p.id)||"prova-"+nome.toLowerCase()
+
 .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+
 .replace(/[^a-z0-9]+/g,"-")+"-"+ano;
+
 return {id,nome,ano};
+
 }
+
 function normalizarQuestao(q,p){
+
 let status=clean(q.situacao).toLowerCase();
+
 if(!["acertei","errei","nao_fiz","anulada"].includes(status)){
+
 status="nao_fiz";
+
 }
+
 return {
+
 id:clean(q.id)||p.id+"-q"+(q.numero||q.questao),
+
 provaId:p.id,numero:q.numero||q.questao||0,
+
 enunciado:String(q.enunciado||q.texto||""),
+
 alternativas:q.alternativas||{},
+
 grande_area:clean(q.grande_area||q.area),
+
 tema_geral:clean(q.tema_geral||q.tema),
+
 tema_especifico:clean(q.tema_especifico||q.subtema),
+
 classificacao_aprovada:!!q.classificacao_aprovada,
+
 situacao:status,
+
 gabarito:clean(q.gabarito),
+
 minha_resposta:clean(q.minha_resposta),
+
 comentario:String(q.comentario||""),
+
 imagens:q.imagens||[]
+
 };
+
 }
 
 async function importarJSON(data,nome){
+
 if(data.tipo==="MEUBANCO_BACKUP_V3"||
+
 (Array.isArray(data.provas)&&Array.isArray(data.questoes))){
+
 await restaurar(data);return;
+
 }
+
 let lista=data.questoes||data.questions;
+
 if(!Array.isArray(lista))throw Error("JSON sem questões.");
+
 let p=normalizarProva(data.prova||{
+
 nome:data.nome||nome.replace(/\.json$/i,""),ano:data.ano||""});
+
 await importarRegistros([p],lista.map(q=>normalizarQuestao(q,p)),[]);
+
 }
+
 async function importarZIP(file){
+
 if(typeof JSZip==="undefined")throw Error("Biblioteca ZIP indisponível.");
+
 let zip=await JSZip.loadAsync(file);
+
 let entrada=zip.file("manifest.json")||zip.file("backup.json");
+
 if(!entrada)throw Error("ZIP sem manifest.json ou backup.json.");
+
 let data=JSON.parse(await entrada.async("string"));
+
 if(data.tipo==="MEUBANCO_BACKUP_V3"){
+
 await restaurar(data,zip);return;
+
 }
+
 let p=normalizarProva(data.prova||{nome:file.name,ano:""});
+
 let lista=(data.questoes||[]).map(q=>normalizarQuestao(q,p));
+
 let imgs=[];
+
 for(let q of lista){
+
 let ids=[];
+
 for(let caminho of q.imagens){
+
 if(typeof caminho!=="string"||caminho.includes(".."))continue;
+
 let f=zip.file(caminho.replace(/^\/+/,""));
+
 if(!f)continue;
+
 let id=p.id+"::"+caminho;
+
 imgs.push({id,provaId:p.id,caminho,
+
 blob:await f.async("blob")});
+
 ids.push(id);
+
 }
+
 q.imagens=ids;
+
 }
+
 await importarRegistros([p],lista,imgs);
+
 }
+
 async function importarRegistros(ps,qs,imgs){
+
 let repetidas=qs.filter(q=>questoes.some(a=>a.id===q.id));
+
 let substituir=false;
+
 if(repetidas.length){
+
 substituir=confirm(repetidas.length+" questões já existem.\n"+
+
 "OK = substituir registros existentes.\n"+
+
 "Cancelar = preservar os existentes e adicionar apenas novas questões.");
+
 }
+
 for(let p of ps)await salvar("provas",p);
+
 for(let im of imgs)await salvar("imagens",im);
+
 let total=0;
+
 for(let q of qs){
+
 if(repetidas.some(x=>x.id===q.id)&&!substituir)continue;
+
 await salvar("questoes",q);total++;
+
 }
+
 await atualizar();aviso(total+" questões importadas ou atualizadas.");
+
 }
+
 async function restaurar(data,zip){
+
 if(!Array.isArray(data.questoes))throw Error("Backup inválido.");
+
 let imgs=[];
+
 if(zip){
+
 for(let im of data.imagens||[]){
+
 let f=zip.file(im.arquivo);
+
 if(f)imgs.push({
+
 id:im.id,provaId:im.provaId,caminho:im.caminho,
+
 blob:await f.async("blob")
+
 });
+
 }
+
 }
+
 await importarRegistros(data.provas||[],data.questoes,imgs);
+
 for(let c of data.colecoes||[])await salvar("colecoes",c);
+
 await atualizar();
+
 }
+
 async function exportarBackup(){
+
 if(typeof JSZip==="undefined"){aviso("Biblioteca ZIP indisponível.");return}
+
 let zip=new JSZip(),imgs=[];
+
 for(let im of imagens){
+
 let ext=(im.caminho||"imagem.png").split(".").pop().toLowerCase();
+
 if(!/^(jpg|jpeg|png|gif|webp|svg)$/.test(ext))ext="png";
+
 let arquivo="imagens/"+im.id.replace(/[^a-z0-9_-]/gi,"_")+"."+ext;
+
 zip.file(arquivo,im.blob);
+
 imgs.push({id:im.id,provaId:im.provaId,caminho:im.caminho,arquivo});
+
 }
+
 zip.file("backup.json",JSON.stringify({
+
 tipo:"MEUBANCO_BACKUP_V3",versao:3,
+
 provas,questoes,colecoes,imagens:imgs,
+
 criado:new Date().toISOString()
+
 },null,2));
+
 let blob=await zip.generateAsync({type:"blob",compression:"DEFLATE"});
+
 baixar(blob,"MEUBANCO-BACKUP-"+new Date().toISOString().slice(0,10)+".zip");
+
 }
+
 async function apagarProva(id){
+
 if(!confirm("Excluir esta prova e todas as questões e imagens?"))return;
+
 for(let q of questoes.filter(x=>x.provaId===id))
+
 await excluir("questoes",q.id);
+
 for(let im of imagens.filter(x=>x.provaId===id))
+
 await excluir("imagens",im.id);
+
 await excluir("provas",id);await atualizar();
+
 }
+
 async function apagarTudo(){
+
 if(prompt("Digite APAGAR para confirmar a exclusão de todo o banco:")!=="APAGAR")return;
+
 for(let t of ["provas","questoes","colecoes","imagens"])await limpar(t);
+
 await atualizar();
+
 }
 
 $("importFile").addEventListener("change",async e=>{
+
 let files=[...e.target.files];e.target.value="";
+
 for(let file of files){
+
 try{
+
 if(file.name.toLowerCase().endsWith(".zip"))
+
 await importarZIP(file);
+
 else if(file.name.toLowerCase().endsWith(".json"))
+
 await importarJSON(JSON.parse(await file.text()),file.name);
+
 else throw Error("Arquivo incompatível.");
+
 }catch(err){console.error(err);aviso("Erro: "+err.message)}
+
 }
+
 });
 
 (async()=>{
+
 try{
+
 db=await banco();
+
 await atualizar();
+
 }catch(e){
+
 $("app").innerHTML="<h2>Não foi possível abrir o banco local.</h2><p>Abra pelo GitHub Pages, em HTTPS, fora do modo privado.</p>";
+
 console.error(e);
+
 }
+
 })();
+
 </script>
+
 </body>
+
 </html>
