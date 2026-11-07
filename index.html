@@ -1,80 +1,828 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#102f2b"><title>MEU BANCO DE QUESTÕES</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6f8fa">
+<title>MEUBANCO</title>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <style>
-:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#19332f;background:#f5f7f5;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.top{background:#102f2b;color:#fff;padding:24px max(18px,calc((100vw - 1200px)/2))}.top h1{margin:0;font-size:25px;letter-spacing:.025em}.top p{margin:7px 0 0;color:#bed4c9;font-size:14px}.wrap{max-width:1200px;margin:auto;padding:22px 16px 70px}.nav{display:flex;gap:8px;overflow:auto;padding-bottom:8px;margin-bottom:16px}.nav button{white-space:nowrap}.btn{padding:10px 14px;border-radius:10px;border:1px solid #ced9d2;background:#fff;color:#173c34;font-weight:650}.btn:hover{border-color:#3d8770}.btn.primary,.nav button.active{background:#17654e;color:white;border-color:#17654e}.btn.danger{color:#9c3232;border-color:#e7bbbb}.btn.small{font-size:12px;padding:7px 10px}.card{background:#fff;border:1px solid #e0e8e1;border-radius:16px;padding:19px;margin-bottom:16px;box-shadow:0 3px 13px rgba(10,40,25,.025)}h2{font-size:19px;margin:0 0 14px}h3{font-size:16px;margin:0 0 10px}.muted{color:#62736c}.smalltxt{font-size:13px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label,.field .fieldlabel{font-size:12px;color:#597065;font-weight:700}.field input,.field select,.field textarea{border:1px solid #d2dcd5;border-radius:9px;padding:10px;background:#fff;min-width:0;width:100%;color:#1c302a}.field textarea{min-height:100px;resize:vertical}.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.between{justify-content:space-between}.tabs{display:none}.tabs.active{display:block}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{background:#edf3ef;color:#385c4e;border-radius:50px;padding:5px 9px;font-size:12px}.status{font-size:12px;font-weight:700;border-radius:30px;padding:5px 10px;white-space:nowrap}.status.acert{background:#e4f5eb;color:#1a7849}.status.err{background:#fdeaea;color:#a13535}.status.nao{background:#edf0f4;color:#536579}.list{display:grid;gap:10px}.item{padding:15px;border:1px solid #e2e9e3;border-radius:12px;background:#fff}.item h3{margin:0 0 7px}.item .preview{white-space:pre-wrap;overflow-wrap:anywhere;color:#55675e;font-size:14px;margin:10px 0}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{background:#f1f6f2;border-radius:12px;padding:15px}.metric strong{display:block;font-size:26px;color:#164c3c}.metric span{font-size:12px;color:#546e5f}.checks{max-height:166px;overflow:auto;border:1px solid #d6e1d7;border-radius:10px;padding:8px;display:grid;gap:6px}.checks label{display:flex;gap:8px;align-items:center;font-size:13px;padding:3px}.checks input{accent-color:#17654e}.question{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}.alternative{display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid #e2e8e2;border-radius:10px;margin:8px 0;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.alternative.correct{border-color:#52a578;background:#eefaf2}.alternative.wrong{border-color:#df8a8a;background:#fff3f3}.alternative input{margin-top:5px;accent-color:#17654e}.note{background:#f0f5f2;border-left:3px solid #387860;padding:11px;border-radius:6px;white-space:pre-wrap}.empty{text-align:center;padding:35px;color:#667a6d}.hide{display:none!important}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#183c32;color:#fff;padding:12px 18px;border-radius:10px;box-shadow:0 5px 22px #0002;z-index:20;max-width:90vw}.modalwrap{position:fixed;inset:0;background:#091e19b3;z-index:15;display:flex;align-items:center;justify-content:center;padding:16px}.modal{width:min(790px,100%);max-height:92vh;overflow:auto;background:white;border-radius:15px;padding:20px}.modal .grid{grid-template-columns:repeat(2,1fr)}.pageheading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.foot{color:#73847a;text-align:center;font-size:12px;margin-top:25px}.pagination{display:flex;align-items:center;justify-content:center;gap:12px;margin:15px}.link{color:#135d49}.filelabel{display:inline-flex;align-items:center;gap:8px}.monospace{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;white-space:pre-wrap;overflow:auto;max-height:270px;background:#f2f5f2;padding:13px;border-radius:9px}.flag{color:#a05d00}.wide{grid-column:1/-1}@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.grid{grid-template-columns:1fr}.top h1{font-size:21px}.card{padding:14px}.metric strong{font-size:23px}.modal .grid{grid-template-columns:1fr}.wrap{padding:14px 11px 60px}}
+:root{
+  --bg:#f6f8fa;--white:#fff;--ink:#263445;
+  --muted:#718093;--line:#e3e8ed;--accent:#285d76;
+  --soft:#eaf2f6;--red:#b74747;--green:#27805b
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+header{background:white;border-bottom:1px solid var(--line);
+padding:17px 24px;display:flex;align-items:center;
+justify-content:space-between;gap:10px}
+.logo{font-size:21px;font-weight:800;letter-spacing:1px}
+.logo small{display:block;color:var(--muted);font-size:11px;
+font-weight:400;letter-spacing:0}
+nav{display:flex;gap:5px;flex-wrap:wrap}
+nav button{border:0;background:transparent;color:var(--muted);
+padding:10px;border-radius:8px;font-size:13px}
+nav button.active{background:var(--soft);color:var(--accent);font-weight:700}
+main{max-width:1250px;margin:auto;padding:26px 18px 70px}
+h1{font-size:26px;letter-spacing:-.5px;margin:0 0 5px}
+h2{font-size:18px;margin:0 0 16px}
+p{line-height:1.6}
+.sub{color:var(--muted);font-size:13px;margin-bottom:23px}
+.card{background:white;border:1px solid var(--line);
+border-radius:14px;padding:19px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.two{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.metric{background:white;border:1px solid var(--line);
+border-radius:13px;padding:17px}
+.metric strong{font-size:29px;display:block;margin:6px 0}
+.small{color:var(--muted);font-size:12px}
+.btn{padding:10px 13px;border-radius:9px;border:1px solid var(--line);
+background:white;color:var(--ink);font-weight:600;font-size:13px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+.btn.danger{color:var(--red)}
+.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.between{justify-content:space-between}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);
+border-radius:9px;background:white;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+label{display:block;color:var(--muted);font-size:12px;
+font-weight:600;margin-bottom:6px}
+.field{margin-bottom:12px}
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.item{padding:15px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item h3{font-size:15px;margin:0}
+.preview{color:var(--muted);font-size:13px;line-height:1.5;
+display:-webkit-box;-webkit-line-clamp:2;
+-webkit-box-orient:vertical;overflow:hidden}
+.tag{display:inline-block;background:#f0f3f6;padding:5px 9px;
+border-radius:20px;font-size:11px;margin:3px 3px 3px 0}
+.good{background:#e7f5ed;color:var(--green)}
+.bad{background:#ffeded;color:var(--red)}
+.warn{background:#fff4d9;color:#966515}
+.check{width:19px;height:19px;accent-color:var(--accent)}
+.bar{height:11px;border-radius:15px;background:#edf1f4;overflow:hidden}
+.fill{height:100%;background:#438da4}
+.chartrow{display:grid;grid-template-columns:130px 1fr 70px;
+gap:12px;align-items:center;margin:13px 0;font-size:12px}
+.modal-bg{position:fixed;inset:0;background:#17233088;
+z-index:10;display:flex;align-items:center;justify-content:center;padding:13px}
+.modal{width:min(100%,980px);max-height:94vh;overflow:auto;background:white;
+border-radius:16px;padding:22px}
+.question{white-space:pre-wrap;line-height:1.7;font-size:15px}
+.alternative{padding:12px;border:1px solid var(--line);
+border-radius:9px;margin:8px 0;white-space:pre-wrap;font-size:14px}
+.qimage{max-width:100%;max-height:450px;object-fit:contain;
+display:block;margin:12px 0;border-radius:9px}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.notice{background:var(--soft);padding:13px;border-radius:10px;
+font-size:13px;color:#416478;line-height:1.6}
+.hidden{display:none}
+@media(max-width:800px){
+header{display:block;padding:13px}
+nav{margin-top:12px;overflow-x:auto;flex-wrap:nowrap}
+nav button{white-space:nowrap}
+main{padding:18px 12px}
+.grid,.two{grid-template-columns:repeat(2,1fr)}
+.filters{grid-template-columns:repeat(2,1fr)}
+.modal{padding:14px}
+}
+@media(max-width:480px){
+.grid,.two,.filters{grid-template-columns:1fr}
+.chartrow{grid-template-columns:95px 1fr 65px}
+}
 </style>
 </head>
 <body>
-<header class="top"><h1>MEU BANCO DE QUESTÕES</h1><p>Suas provas de residência, organizadas por assunto e desempenho.</p></header>
-<main class="wrap">
-<nav class="nav"><button class="btn active" data-tab="consultar">Consultar questões</button><button class="btn" data-tab="estatisticas">Estatísticas</button><button class="btn" data-tab="importar">Importar / Backup</button><button class="btn" data-tab="ajuda">Modelo JSON</button></nav>
-<section id="consultar" class="tabs active">
-<div class="card"><div class="pageheading"><h2>Filtrar banco de questões</h2><button class="btn small" id="clearFilters">Limpar filtros</button></div>
-<div class="grid">
-<div class="field"><span class="fieldlabel">Provas (selecione várias)</span><div id="proofChecks" class="checks"></div></div>
-<div class="field"><label for="area">Grande área</label><select id="area"></select><label for="general">Tema geral</label><select id="general"></select></div>
-<div class="field"><label for="specific">Tema específico</label><select id="specific"></select><label for="year">Ano</label><select id="year"></select></div>
-<div class="field"><label for="status">Situação</label><select id="status"><option value="">Todas</option><option value="acertei">Acertei</option><option value="errei">Errei</option><option value="nao_fiz">Não fiz</option></select><label for="search">Busca por palavra</label><input id="search" placeholder="Ex.: hemocultura"></div>
-</div>
-<div class="row" style="margin-top:15px"><button class="btn primary" id="startStudy">Resolver questões filtradas</button><button class="btn" id="exportFiltered">Exportar filtradas (JSON)</button><span id="count" class="muted smalltxt"></span></div></div>
-<div id="questions" class="list"></div><div id="pagination" class="pagination"></div>
-</section>
-<section id="estatisticas" class="tabs"><div class="card"><h2>Seu desempenho</h2><div class="metrics" id="metrics"></div><p class="muted smalltxt">O percentual de acertos considera apenas questões marcadas como Acertei ou Errei. “Não fiz” não entra no denominador.</p></div><div class="card"><h2>Acertos por grande área</h2><div id="areaStats"></div></div><div class="card"><h2>Acertos por prova</h2><div id="proofStats"></div></div><div class="card"><h2>Acertos por tema geral</h2><div id="themeStats"></div></div></section>
-<section id="importar" class="tabs"><div class="card"><h2>Adicionar provas</h2><p class="muted">Importe um JSON gerado no ChatGPT. Uma importação adiciona questões novas e preserva as anteriores. Registros com o mesmo identificador não são duplicados.</p><input id="fileInput" type="file" accept=".json,application/json" multiple><p id="importReport" class="smalltxt"></p></div><div class="card"><h2>Backup e gerenciamento</h2><p class="muted">Os dados ficam armazenados neste navegador/dispositivo. Exporte backups frequentemente: limpar os dados do navegador pode apagar o banco.</p><div class="row"><button class="btn primary" id="exportAll">Baixar backup completo</button><button class="btn" id="exportTemplate">Baixar modelo de prova</button><button class="btn danger" id="clearAll">Apagar banco inteiro</button></div><p class="smalltxt muted" id="storageStats"></p></div></section>
-<section id="ajuda" class="tabs"><div class="card"><h2>Como preparar arquivos para importar</h2><p>Envie aqui no ChatGPT a prova em PDF, seu gabarito e o gabarito oficial e peça um arquivo JSON para o Meu Banco de Questões. Cada questão deve conter texto integral, alternativas, temas e sua situação.</p><p>Os campos essenciais são <code>prova</code>, <code>ano</code>, <code>numero</code>, <code>enunciado</code>, <code>alternativas</code>, <code>gabarito</code>, <code>minha_resposta</code>, <code>situacao</code>, <code>grande_area</code>, <code>tema_geral</code> e <code>tema_especifico</code>. Em provas não realizadas, use <code>situacao: "nao_fiz"</code>.</p><div class="row"><button class="btn primary" id="templateAgain">Baixar exemplo JSON</button><button class="btn" id="copyPrompt">Copiar instrução de preparação</button></div><h3 style="margin-top:20px">Estrutura de exemplo</h3><pre id="jsonExample" class="monospace"></pre></div></section>
-</main><footer class="foot">MEU BANCO DE QUESTÕES · Dados salvos localmente no navegador</footer>
-<div id="modalRoot"></div><div id="toastRoot"></div>
+
+<header>
+<div class="logo">MEUBANCO
+<small>Meu banco pessoal de questões</small></div>
+<nav id="nav"></nav>
+</header>
+
+<main id="app"></main>
+<div id="modalRoot"></div>
+<input id="importFile" type="file" accept=".zip,.json" multiple hidden>
+
 <script>
-'use strict';
-const DB_KEY='meu_banco_questoes_v1';
-const example={versao:1,questoes:[{id:'psu-mg-2023-q34',prova:'PSU-MG',ano:2023,numero:34,grande_area:'Clínica Médica',tema_geral:'Cardiologia',tema_especifico:'Endocardite infecciosa',enunciado:'EXEMPLO FICTÍCIO — substitua pelo enunciado integral da questão.',alternativas:{A:'Alternativa A',B:'Alternativa B',C:'Alternativa C',D:'Alternativa D'},gabarito:'D',minha_resposta:'B',situacao:'errei',comentario:'Campo opcional para observações.'}]};
-let questions=[];let page=1;const PAGE_SIZE=15;let selectedProofs=new Set();let proofSelectionInitialized=false;let studyIds=[];let studyIndex=0;let studyAnswers={};
-const $=id=>document.getElementById(id);const txt=v=>String(v??'');const norm=v=>txt(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();const esc=v=>txt(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function toast(s){$('toastRoot').innerHTML='<div class="toast">'+esc(s)+'</div>';setTimeout(()=>$('toastRoot').replaceChildren(),3500)}
-function save(){try{localStorage.setItem(DB_KEY,JSON.stringify(questions));$('storageStats').textContent=`${questions.length} questões armazenadas.`;return true}catch(e){alert('Não foi possível salvar. Armazenamento cheio ou bloqueado. Exporte um backup.');return false}}
-function load(){try{const raw=JSON.parse(localStorage.getItem(DB_KEY)||'[]');questions=Array.isArray(raw)?raw:[]}catch(e){questions=[];alert('Falha ao ler o banco salvo.')}}
-function examKey(q){return [norm(q.prova),txt(q.ano),norm(q.edicao||'')].join('|')}
-function examLabel(q){return `${q.prova}${q.ano?' '+q.ano:''}${q.edicao?' — '+q.edicao:''}`}
-function idFor(q){return [q.prova,q.ano,q.edicao||'',q.numero].map(v=>norm(v).replace(/[^a-z0-9]+/g,'-')).join('--')}
-function standardize(q){if(!q||typeof q!=='object'||Array.isArray(q))throw Error('Questão inválida');let a=q.alternativas??{};if(Array.isArray(a)){a=Object.fromEntries(a.map((v,i)=>[String.fromCharCode(65+i),v]))}if(!a||typeof a!=='object')a={};const normalizedAlternatives={};for(const [key,value] of Object.entries(a)){const clean=txt(key).trim().toUpperCase();if(clean)normalizedAlternatives[clean]=txt(value)}
-const v={id:txt(q.id||'').trim(),prova:txt(q.prova||q.concurso).trim(),ano:txt(q.ano).trim(),edicao:txt(q.edicao).trim(),numero:txt(q.numero||q.questao).trim(),grande_area:txt(q.grande_area).trim(),tema_geral:txt(q.tema_geral).trim(),tema_especifico:txt(q.tema_especifico).trim(),enunciado:txt(q.enunciado).trim(),alternativas:normalizedAlternatives,gabarito:txt(q.gabarito).trim().toUpperCase(),minha_resposta:txt(q.minha_resposta).trim().toUpperCase(),situacao:norm(q.situacao).replace(/[\s-]+/g,'_'),comentario:txt(q.comentario).trim()};
-if(!v.prova||!v.numero||!v.enunciado)throw Error('Faltam prova, número ou enunciado');if(!v.id)v.id=idFor(v);if(!v.situacao){v.situacao=!v.minha_resposta?'nao_fiz':(v.gabarito&&v.minha_resposta===v.gabarito?'acertei':'errei')}if(['nao_fiz','naofiz','nao_respondi','nao_realizei'].includes(v.situacao))v.situacao='nao_fiz';if(!['acertei','errei','nao_fiz'].includes(v.situacao))throw Error('Situação não reconhecida: '+v.situacao);
-return v}
-function parseFileData(raw){const input=Array.isArray(raw)?raw:raw?.questoes;if(!Array.isArray(input))throw Error('JSON precisa ter uma lista "questoes"');return input}
-function importBatch(raw,source){const rows=parseFileData(raw);const existing=new Set(questions.map(q=>q.id));let added=0,duplicate=0,errors=[];for(let i=0;i<rows.length;i++){try{const q=standardize(rows[i]);if(existing.has(q.id)){duplicate++;continue}questions.push(q);existing.add(q.id);added++}catch(e){errors.push(`Questão ${i+1}: ${e.message}`)}}save();return {source,added,duplicate,errors}}
-function downloadJson(value,filename){const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function uniq(values){return [...new Set(values.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true}))}
-function options(id,values,allLabel){const sel=$(id),prev=sel.value;sel.innerHTML=`<option value="">${esc(allLabel)}</option>`+uniq(values).map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');sel.value=[...sel.options].some(o=>o.value===prev)?prev:''}
-function rebuildControls(){const keys=new Map(questions.map(q=>[examKey(q),examLabel(q)]));const entries=[...keys.entries()].sort((a,b)=>a[1].localeCompare(b[1],'pt-BR',{numeric:true}));if(!proofSelectionInitialized){selectedProofs=new Set(entries.map(e=>e[0]));proofSelectionInitialized=true}else{for(const [k] of entries)if(!selectedProofs.has(k)&&!window.__knownProofs?.has(k))selectedProofs.add(k)}window.__knownProofs=new Set(entries.map(e=>e[0]));$('proofChecks').innerHTML=entries.length?entries.map(([key,label])=>`<label><input type="checkbox" class="examcheck" value="${esc(key)}" ${selectedProofs.has(key)?'checked':''}>${esc(label)}</label>`).join(''):'<span class="muted smalltxt">Nenhuma prova importada</span>';
-$('proofChecks').querySelectorAll('input').forEach(el=>el.addEventListener('change',()=>{selectedProofs= new Set([...document.querySelectorAll('.examcheck:checked')].map(e=>e.value));renderList()}));
-options('area',questions.map(q=>q.grande_area),'Todas as áreas');const area=$('area').value;const byArea=questions.filter(q=>!area||q.grande_area===area);options('general',byArea.map(q=>q.tema_geral),'Todos os temas');const theme=$('general').value;const byTheme=byArea.filter(q=>!theme||q.tema_geral===theme);options('specific',byTheme.map(q=>q.tema_especifico),'Todos os subtemas');options('year',questions.map(q=>q.ano),'Todos os anos');$('storageStats').textContent=`${questions.length} questões armazenadas.`}
-function filtered(){let area=$('area').value,theme=$('general').value,spec=$('specific').value,year=$('year').value,status=$('status').value,search=norm($('search').value);return questions.filter(q=>selectedProofs.has(examKey(q))&&(!area||q.grande_area===area)&&(!theme||q.tema_geral===theme)&&(!spec||q.tema_especifico===spec)&&(!year||q.ano===year)&&(!status||q.situacao===status)&&(!search||norm([q.enunciado,Object.values(q.alternativas).join(' '),q.comentario,q.tema_geral,q.tema_especifico].join(' ')).includes(search))).sort((a,b)=>examLabel(a).localeCompare(examLabel(b),'pt-BR',{numeric:true})||Number(a.numero)-Number(b.numero))}
-function stateLabel(s){return {acertei:'Acertei',errei:'Errei',nao_fiz:'Não fiz'}[s]||s}
-function stateClass(s){return {acertei:'acert',errei:'err',nao_fiz:'nao'}[s]||'nao'}
-function getById(id){return questions.find(q=>q.id===id)}
-function renderList(){const rows=filtered();const total=Math.ceil(rows.length/PAGE_SIZE);page=Math.max(1,Math.min(page,total||1));$('count').textContent=`${rows.length} questões encontradas`;
-$('questions').innerHTML=rows.length?rows.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE).map(q=>`<article class="item"><div class="row between"><h3>${esc(examLabel(q))} · Questão ${esc(q.numero)}</h3><span class="status ${stateClass(q.situacao)}">${stateLabel(q.situacao)}</span></div><div class="chips"><span class="chip">${esc(q.grande_area||'Área não classificada')}</span><span class="chip">${esc(q.tema_geral||'Tema não classificado')}</span><span class="chip">${esc(q.tema_especifico||'Subtema não classificado')}</span></div><div class="preview">${esc(q.enunciado.slice(0,240))}${q.enunciado.length>240?'…':''}</div><div class="row"><button class="btn primary small" data-act="view" data-id="${esc(q.id)}">Abrir questão</button><button class="btn small" data-discussion="open" data-id="${esc(q.id)}">Discutir no ChatGPT</button><button class="btn small" data-discussion="copy" data-id="${esc(q.id)}">Copiar prompt</button><button class="btn small" data-act="edit" data-id="${esc(q.id)}">Editar</button><button class="btn danger small" data-act="delete" data-id="${esc(q.id)}">Excluir</button></div></article>`).join(''):'<div class="card empty">Nenhuma questão encontrada. Importe uma prova ou altere os filtros.</div>';
-$('pagination').innerHTML=rows.length>PAGE_SIZE?`<button class="btn small" id="prevPage" ${page===1?'disabled':''}>Anterior</button><span class="smalltxt">${page} / ${total}</span><button class="btn small" id="nextPage" ${page===total?'disabled':''}>Próxima</button>`:'';if($('prevPage'))$('prevPage').onclick=()=>{page--;renderList();window.scrollTo(0,0)};if($('nextPage'))$('nextPage').onclick=()=>{page++;renderList();window.scrollTo(0,0)}}
-function changeTab(name){document.querySelectorAll('.tabs').forEach(e=>e.classList.toggle('active',e.id===name));document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===name));if(name==='estatisticas')renderStats()}
-function closeModal(){$('modalRoot').replaceChildren();studyIds=[]}
-function modal(inner){$('modalRoot').innerHTML=`<div class="modalwrap"><div class="modal"><div class="row between"><h2>Questão</h2><button class="btn small" id="closeModal">Fechar ×</button></div>${inner}</div></div>`;$('closeModal').onclick=closeModal}
-function alternatives(q,{study=false,selected='',reveal=true}={}){let entries=Object.entries(q.alternativas);if(!entries.length)return '<p class="flag">Alternativas não cadastradas.</p>';return entries.map(([letter,content])=>{const correct=reveal&&letter===q.gabarito;const wrong=reveal&&letter===selected&&letter!==q.gabarito;return `<label class="alternative ${correct?'correct':''} ${wrong?'wrong':''}">${study?`<input type="radio" name="studyChoice" value="${esc(letter)}" ${selected===letter?'checked':''} ${reveal?'disabled':''}>`:''}<strong>${esc(letter)})</strong><span>${esc(content)}</span></label>`}).join('')}
-function discussionPrompt(q){return `Estou estudando para residência médica e quero DISCUTIR ESTA QUESTÃO REAL DE PROVA. Corrija criticamente todas as alternativas, identifique o tema central, explique as pegadinhas e faça uma revisão aprofundada do tema, sem presumir que o gabarito cadastrado esteja correto. Se houver ambiguidade, questione o gabarito e explique. Não gere resumo para caderno até eu concluir a discussão.\n\nPROVA: ${examLabel(q)}\nQUESTÃO: ${q.numero}\nÁREA: ${q.grande_area||'Não classificada'}\nTEMA GERAL: ${q.tema_geral||'Não classificado'}\nTEMA ESPECÍFICO: ${q.tema_especifico||'Não classificado'}\nSITUAÇÃO: ${stateLabel(q.situacao)}\nMINHA RESPOSTA: ${q.minha_resposta||'Não respondida'}\nGABARITO CADASTRADO: ${q.gabarito||'Não informado'}\n\nENUNCIADO COMPLETO:\n${q.enunciado}\n\nALTERNATIVAS:\n${Object.entries(q.alternativas).map(([k,v])=>`${k}) ${v}`).join('\n')}\n${q.comentario?'\nOBSERVAÇÕES CADASTRADAS:\n'+q.comentario:''}\n\nComece corrigindo todas as alternativas, depois desenvolva a revisão geral do assunto.`}
-function discussionButtons(id){return `<div class="row" style="margin-top:16px"><button class="btn primary small" data-discussion="open" data-id="${esc(id)}">Discutir no ChatGPT</button><button class="btn small" data-discussion="copy" data-id="${esc(id)}">Copiar prompt para este chat</button></div><p class="muted smalltxt">Abrir inicia uma conversa no ChatGPT; copiar permite colar a questão em um chat já existente.</p>`}
-async function copyDiscussion(id){const q=getById(id);if(!q)return;const content=discussionPrompt(q);try{await navigator.clipboard.writeText(content);toast('Prompt completo copiado. Cole no chat que preferir.')}catch(e){const input=document.createElement('textarea');input.value=content;input.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(input);input.select();const ok=document.execCommand('copy');input.remove();if(ok)toast('Prompt copiado.');else prompt('Copie este texto:',content)}}
-function openDiscussion(id){const q=getById(id);if(!q)return;const content=discussionPrompt(q);const url='https://chatgpt.com/?q='+encodeURIComponent(content);const win=window.open(url,'_blank','noopener,noreferrer');if(!win){window.location.href=url}}
-function viewQuestion(id){const q=getById(id);if(!q)return;modal(`<div class="row between"><h3>${esc(examLabel(q))} — Questão ${esc(q.numero)}</h3><span class="status ${stateClass(q.situacao)}">${stateLabel(q.situacao)}</span></div><p class="muted smalltxt">${esc([q.grande_area,q.tema_geral,q.tema_especifico].filter(Boolean).join(' › '))}</p><div class="question">${esc(q.enunciado)}</div>${alternatives(q)}<p><strong>Gabarito:</strong> ${esc(q.gabarito||'Não informado')} · <strong>Minha resposta:</strong> ${esc(q.minha_resposta||'Não respondida')}</p>${q.comentario?`<div class="note">${esc(q.comentario)}</div>`:''}${discussionButtons(q.id)}`)}
-function editQuestion(id){const q=getById(id);if(!q)return;modal(`<h3>Editar metadados e resposta</h3><form id="editForm" class="grid"><div class="field"><label>Prova</label><input name="prova" required value="${esc(q.prova)}"></div><div class="field"><label>Ano</label><input name="ano" value="${esc(q.ano)}"></div><div class="field"><label>Edição / Caderno</label><input name="edicao" value="${esc(q.edicao)}"></div><div class="field"><label>Número</label><input name="numero" required value="${esc(q.numero)}"></div><div class="field"><label>Grande área</label><input name="grande_area" value="${esc(q.grande_area)}"></div><div class="field"><label>Tema geral</label><input name="tema_geral" value="${esc(q.tema_geral)}"></div><div class="field"><label>Tema específico</label><input name="tema_especifico" value="${esc(q.tema_especifico)}"></div><div class="field"><label>Situação</label><select name="situacao"><option value="acertei" ${q.situacao==='acertei'?'selected':''}>Acertei</option><option value="errei" ${q.situacao==='errei'?'selected':''}>Errei</option><option value="nao_fiz" ${q.situacao==='nao_fiz'?'selected':''}>Não fiz</option></select></div><div class="field"><label>Gabarito</label><input name="gabarito" value="${esc(q.gabarito)}"></div><div class="field"><label>Minha resposta</label><input name="minha_resposta" value="${esc(q.minha_resposta)}"></div><div class="field wide"><label>Enunciado</label><textarea name="enunciado" required>${esc(q.enunciado)}</textarea></div><div class="field wide"><label>Alternativas (JSON: {"A":"..."})</label><textarea name="alternativas">${esc(JSON.stringify(q.alternativas,null,2))}</textarea></div><div class="field wide"><label>Observações</label><textarea name="comentario">${esc(q.comentario)}</textarea></div><div class="row wide"><button class="btn primary" type="submit">Salvar</button></div></form>`);$('editForm').onsubmit=e=>{e.preventDefault();try{const form=Object.fromEntries(new FormData(e.target).entries());form.alternativas=JSON.parse(form.alternativas||'{}');form.id=id;const next=standardize(form);questions[questions.findIndex(x=>x.id===id)]=next;if(!save())return;closeModal();rebuildControls();renderList();toast('Questão atualizada')}catch(err){alert('Não foi possível salvar: '+err.message)}}}
-function deleteQuestion(id){const q=getById(id);if(!q||!confirm(`Excluir ${examLabel(q)} — Questão ${q.numero}?`))return;questions=questions.filter(x=>x.id!==id);save();rebuildControls();renderList();toast('Questão excluída')}
-function startStudy(){const all=filtered();if(!all.length)return toast('Nenhuma questão corresponde aos filtros');studyIds=all.map(q=>q.id);studyIndex=0;studyAnswers={};renderStudy()}
-function renderStudy(){const q=getById(studyIds[studyIndex]);if(!q)return closeModal();const val=studyAnswers[q.id]||'';const show=!!val;modal(`<p class="muted smalltxt">${studyIndex+1} de ${studyIds.length} · ${esc(examLabel(q))} · Questão ${esc(q.numero)}</p><p class="smalltxt muted">${esc([q.grande_area,q.tema_geral,q.tema_especifico].filter(Boolean).join(' › '))}</p><div class="question">${esc(q.enunciado)}</div><div id="choiceArea">${alternatives(q,{study:true,selected:val,reveal:show})}</div><div id="feedback">${show?`<p><strong>${val===q.gabarito?'Resposta correta.':'Resposta incorreta.'}</strong> Gabarito: ${esc(q.gabarito||'Não informado')}. Histórico: ${stateLabel(q.situacao)}.</p>`:''}</div><div class="row" style="margin-top:12px"><button class="btn primary" id="checkStudy" ${show?'disabled':''}>Conferir resposta</button><button class="btn" id="previousStudy" ${studyIndex===0?'disabled':''}>Anterior</button><button class="btn" id="nextStudy" ${studyIndex===studyIds.length-1?'disabled':''}>Próxima</button></div>${discussionButtons(q.id)}`);$('checkStudy').onclick=()=>{const selected=document.querySelector('input[name="studyChoice"]:checked');if(!selected)return toast('Marque uma alternativa');studyAnswers[q.id]=selected.value;renderStudy()};$('previousStudy').onclick=()=>{studyIndex--;renderStudy()};$('nextStudy').onclick=()=>{studyIndex++;renderStudy()}}
-function statsGroups(field,container){const groups=new Map();for(const q of questions){const key=txt(q[field]).trim()||'Não classificado';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(q)};$(container).innerHTML=groups.size?[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],'pt-BR')).map(([name,rows])=>{const answered=rows.filter(x=>x.situacao!=='nao_fiz'),right=answered.filter(x=>x.situacao==='acertei').length;return `<div class="row between" style="padding:10px 0;border-bottom:1px solid #e8ece8"><span>${esc(name)}</span><span class="smalltxt muted">${right}/${answered.length} acertos ${answered.length?`(${Math.round(right/answered.length*100)}%)`:''} · ${rows.length-answered.length} não fiz</span></div>`}).join(''):'<p class="muted">Ainda não há dados.</p>'}
-function renderStats(){const correct=questions.filter(q=>q.situacao==='acertei').length,wrong=questions.filter(q=>q.situacao==='errei').length,unanswered=questions.filter(q=>q.situacao==='nao_fiz').length;const nums=[['Total de questões',questions.length],['Acertei',correct],['Errei',wrong],['Não fiz',unanswered]];$('metrics').innerHTML=nums.map(([label,count])=>`<div class="metric"><strong>${count}</strong><span>${label}</span></div>`).join('')+`<div class="metric" style="grid-column:1/-1"><strong>${correct+wrong?Math.round(correct/(correct+wrong)*100)+'%':'—'}</strong><span>Taxa de acertos (somente respondidas)</span></div>`;statsGroups('grande_area','areaStats');statsGroups('tema_geral','themeStats');const groups=new Map();for(const q of questions){const name=examLabel(q);if(!groups.has(name))groups.set(name,[]);groups.get(name).push(q)}$('proofStats').innerHTML=groups.size?[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],'pt-BR')).map(([name,rows])=>{const answered=rows.filter(q=>q.situacao!=='nao_fiz'),right=answered.filter(q=>q.situacao==='acertei').length;return `<div class="row between" style="padding:10px 0;border-bottom:1px solid #e8ece8"><span>${esc(name)}</span><span class="smalltxt muted">${right}/${answered.length} acertos ${answered.length?`(${Math.round(right/answered.length*100)}%)`:''} · ${rows.length-answered.length} não fiz</span></div>`}).join(''):'<p class="muted">Ainda não há provas.</p>'}
-const promptText='Crie um arquivo JSON importável no MEU BANCO DE QUESTÕES. Estrutura: {"versao":1,"questoes":[...]}. Para cada questão do PDF, transcreva enunciado e alternativas integralmente e sem inventar trechos ilegíveis; campos: id (único e estável), prova, ano, edicao (opcional), numero, grande_area, tema_geral, tema_especifico, enunciado, alternativas (objeto com A/B/C/D/E), gabarito (letra oficial), minha_resposta (letra ou vazio), situacao (acertei/errei/nao_fiz), comentario (opcional). Classifique temas corretamente; compare meu gabarito com o oficial; se não fiz, use situacao "nao_fiz". Preserve mesmo nome de prova/tema entre arquivos e identifique questões anuladas em comentario, sem inventar resposta. Entregue arquivo JSON para baixar.';
-window.addEventListener('DOMContentLoaded',()=>{load();$('jsonExample').textContent=JSON.stringify(example,null,2);document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>changeTab(b.dataset.tab));rebuildControls();renderList();for(const id of ['area','general','specific','year','status'])$(id).addEventListener('change',()=>{if(id==='area'||id==='general'){const a=$('area').value;if(id==='area')options('general',questions.filter(q=>!a||q.grande_area===a).map(q=>q.tema_geral),'Todos os temas');const t=$('general').value;options('specific',questions.filter(q=>(!a||q.grande_area===a)&&(!t||q.tema_geral===t)).map(q=>q.tema_especifico),'Todos os subtemas')}page=1;renderList()});$('search').oninput=()=>{page=1;renderList()};$('clearFilters').onclick=()=>{for(const id of ['area','general','specific','year','status','search'])$(id).value='';selectedProofs=new Set(questions.map(examKey));rebuildControls();page=1;renderList()};document.addEventListener('click',e=>{const btn=e.target.closest('button[data-discussion]');if(!btn)return;if(btn.dataset.discussion==='copy')copyDiscussion(btn.dataset.id);else openDiscussion(btn.dataset.id)});$('questions').onclick=e=>{const btn=e.target.closest('button[data-act]');if(!btn)return;({view:viewQuestion,edit:editQuestion,delete:deleteQuestion})[btn.dataset.act]?.(btn.dataset.id)};$('startStudy').onclick=startStudy;$('exportFiltered').onclick=()=>downloadJson({versao:1,questoes:filtered()},'questoes-filtradas.json');$('exportAll').onclick=()=>downloadJson({versao:1,questoes:questions},'backup-meu-banco-de-questoes.json');for(const id of ['exportTemplate','templateAgain'])$(id).onclick=()=>downloadJson(example,'modelo-prova.json');$('copyPrompt').onclick=async()=>{try{await navigator.clipboard.writeText(promptText);toast('Instrução copiada')}catch(e){alert(promptText)}};$('clearAll').onclick=()=>{if(!questions.length)return;if(!confirm('Apagar TODAS as questões armazenadas neste navegador? Faça backup antes.'))return;if(!confirm('Confirma a exclusão permanente do banco local?'))return;questions=[];selectedProofs=new Set();save();rebuildControls();renderList();renderStats();toast('Banco local apagado')};$('fileInput').onchange=async e=>{const reports=[];for(const file of e.target.files){try{const raw=JSON.parse(await file.text());reports.push(importBatch(raw,file.name))}catch(err){reports.push({source:file.name,added:0,duplicate:0,errors:[err.message]})}}$('importReport').textContent=reports.map(r=>`${r.source}: ${r.added} adicionadas, ${r.duplicate} duplicadas.${r.errors.length?' Problemas: '+r.errors.slice(0,5).join('; ')+(r.errors.length>5?'...':''):''}`).join('\n');$('importReport').style.whiteSpace='pre-wrap';e.target.value='';rebuildControls();renderList();toast('Importação concluída. Confira o relatório.')};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modalRoot').children.length)closeModal()})});
+"use strict";
+
+const $=id=>document.getElementById(id);
+const clean=v=>String(v??"").trim();
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+const uuid=()=>crypto.randomUUID();
+
+const areas=[
+"Clínica Médica","Cirurgia Geral",
+"Ginecologia e Obstetrícia","Pediatria",
+"Medicina Preventiva","Outras"
+];
+
+const tabs=[
+["inicio","Início"],["provas","Provas"],
+["questoes","Questões"],["colecoes","Coleções"],
+["desempenho","Desempenho"],["backup","Importar / Backup"]
+];
+
+let db;
+let provas=[],questoes=[],colecoes=[],imagens=[];
+let tela="inicio";
+let selecionadas=new Set();
+let filtro={prova:"",area:"",tema:"",sub:"",status:"",busca:""};
+let relatorioProva="";
+let questaoAberta=null;
+
+function aviso(t){alert(t)}
+
+function banco(){
+return new Promise((ok,erro)=>{
+let r=indexedDB.open("MEUBANCO_V3",1);
+r.onupgradeneeded=()=>{
+let d=r.result;
+["provas","questoes","colecoes","imagens"].forEach(n=>{
+if(!d.objectStoreNames.contains(n))
+d.createObjectStore(n,{keyPath:"id"});
+});
+};
+r.onsuccess=()=>ok(r.result);
+r.onerror=()=>erro(r.error);
+});
+}
+
+function todos(t){
+return new Promise((ok,erro)=>{
+let r=db.transaction(t).objectStore(t).getAll();
+r.onsuccess=()=>ok(r.result);
+r.onerror=()=>erro(r.error);
+});
+}
+function salvar(t,obj){
+return new Promise((ok,erro)=>{
+let tr=db.transaction(t,"readwrite");
+tr.objectStore(t).put(obj);
+tr.oncomplete=ok;tr.onerror=()=>erro(tr.error);
+});
+}
+function excluir(t,id){
+return new Promise((ok,erro)=>{
+let tr=db.transaction(t,"readwrite");
+tr.objectStore(t).delete(id);
+tr.oncomplete=ok;tr.onerror=()=>erro(tr.error);
+});
+}
+function limpar(t){
+return new Promise((ok,erro)=>{
+let tr=db.transaction(t,"readwrite");
+tr.objectStore(t).clear();
+tr.oncomplete=ok;tr.onerror=()=>erro(tr.error);
+});
+}
+async function atualizar(){
+[provas,questoes,colecoes,imagens]=await Promise.all(
+["provas","questoes","colecoes","imagens"].map(todos));
+render();
+}
+
+function mudar(t){
+tela=t;selecionadas.clear();render();
+window.scrollTo(0,0);
+}
+function cabecalho(t,s){
+return `<h1>${esc(t)}</h1><div class="sub">${esc(s)}</div>`;
+}
+function nomeProva(p){
+return p?`${p.nome} ${p.ano||""}`.trim():"Prova";
+}
+function provaDe(q){
+return provas.find(p=>p.id===q.provaId);
+}
+function tituloQ(q){
+return `${nomeProva(provaDe(q))} — Q${q.numero}`;
+}
+function situacao(q){
+return q.situacao==="acertei"?"Acertei":
+q.situacao==="errei"?"Errei":
+q.situacao==="anulada"?"Anulada":"Não fiz";
+}
+function etiqueta(q){
+let c=q.situacao==="acertei"?"good":
+q.situacao==="errei"?"bad":
+q.situacao==="anulada"?"warn":"";
+return `<span class="tag ${c}">${situacao(q)}</span>`;
+}
+function desempenho(lista){
+let feitas=lista.filter(q=>["acertei","errei"].includes(q.situacao));
+let acertos=feitas.filter(q=>q.situacao==="acertei").length;
+let erros=feitas.length-acertos;
+return {
+total:lista.length,feitas:feitas.length,acertos,erros,
+nao:lista.filter(q=>q.situacao==="nao_fiz").length,
+anuladas:lista.filter(q=>q.situacao==="anulada").length,
+indice:feitas.length?acertos/feitas.length*100:null
+};
+}
+function percentual(n){
+return n===null?"—":n.toFixed(1).replace(".",",")+"%";
+}
+function indicadores(s){
+return `<div class="grid" style="margin-bottom:17px">
+<div class="metric"><span class="small">TOTAL DE QUESTÕES</span><strong>${s.total}</strong></div>
+<div class="metric"><span class="small">QUESTÕES FEITAS</span><strong>${s.feitas}</strong></div>
+<div class="metric"><span class="small">ACERTOS / ERROS</span><strong>${s.acertos} / ${s.erros}</strong></div>
+<div class="metric"><span class="small">ÍNDICE DE ACERTOS</span><strong>${percentual(s.indice)}</strong></div>
+</div>`;
+}
+function render(){
+$("nav").innerHTML=tabs.map(([k,v])=>
+`<button class="${tela===k?"active":""}" onclick="mudar('${k}')">${v}</button>`
+).join("");
+let views={
+inicio:inicio,provas:telaProvas,questoes:telaQuestoes,
+colecoes:telaColecoes,desempenho:telaDesempenho,backup:telaBackup
+};
+$("app").innerHTML=views[tela]();
+}
+
+function inicio(){
+return cabecalho("Minha biblioteca","Organize questões por prova e assunto.")+
+indicadores(desempenho(questoes))+
+`<div class="two">
+<div class="card">
+<h2>Minhas provas</h2>
+${provas.length?provas.map(p=>
+`<div class="item row between">
+<div><b>${esc(nomeProva(p))}</b><div class="small">
+${questoes.filter(q=>q.provaId===p.id).length} questões
+</div></div>
+<button class="btn" onclick="abrirProva('${p.id}')">Abrir</button>
+</div>`).join(""):'<p class="small">Nenhuma prova importada.</p>'}
+</div>
+<div class="card">
+<h2>O que deseja fazer?</h2>
+<p>Importe provas, aprove ou altere os temas sugeridos e reúna questões semelhantes para estudar.</p>
+<div class="row">
+<button class="btn primary" onclick="mudar('backup')">Importar prova</button>
+<button class="btn" onclick="mudar('questoes')">Pesquisar questões</button>
+</div>
+</div></div>`;
+}
+
+function telaProvas(){
+return cabecalho("Provas","Abra uma prova completa ou consulte suas questões.")+
+`<div class="card">
+${provas.length?provas.map(p=>{
+let lista=questoes.filter(q=>q.provaId===p.id);
+let s=desempenho(lista);
+return `<div class="item row between">
+<div><h3>${esc(nomeProva(p))}</h3>
+<div class="small">${s.total} questões · ${s.feitas} feitas · ${percentual(s.indice)} de acertos</div></div>
+<div class="row">
+<button class="btn" onclick="abrirProva('${p.id}')">Ver prova</button>
+<button class="btn danger" onclick="apagarProva('${p.id}')">Excluir</button>
+</div></div>`;
+}).join(""):'<div class="empty">Nenhuma prova importada.</div>'}
+</div>`;
+}
+
+function abrirProva(id){
+filtro={prova:id,area:"",tema:"",sub:"",status:"",busca:""};
+mudar("questoes");
+filtro.prova=id;render();
+}
+function opcao(lista,valor,padrao="Todos"){
+return `<option value="">${padrao}</option>`+
+[...new Set(lista.filter(Boolean))].sort().map(v=>
+`<option value="${esc(v)}" ${v===valor?"selected":""}>${esc(v)}</option>`
+).join("");
+}
+function filtradas(){
+return questoes.filter(q=>
+(!filtro.prova||q.provaId===filtro.prova)&&
+(!filtro.area||q.grande_area===filtro.area)&&
+(!filtro.tema||q.tema_geral===filtro.tema)&&
+(!filtro.sub||q.tema_especifico===filtro.sub)&&
+(!filtro.status||q.situacao===filtro.status)&&
+(!filtro.busca||
+[q.enunciado,q.tema_geral,q.tema_especifico,
+...Object.values(q.alternativas||{})].join(" ")
+.toLowerCase().includes(filtro.busca.toLowerCase()))
+).sort((a,b)=>nomeProva(provaDe(a)).localeCompare(nomeProva(provaDe(b)))||
+Number(a.numero)-Number(b.numero));
+}
+function mudarFiltro(k,v){
+filtro[k]=v;
+if(k==="area"){filtro.tema="";filtro.sub=""}
+if(k==="tema")filtro.sub="";
+render();
+}
+function limparFiltros(){
+filtro={prova:"",area:"",tema:"",sub:"",status:"",busca:""};
+render();
+}
+function linhaQ(q){
+return `<div class="item">
+<div class="row between">
+<div class="row">
+<input class="check" type="checkbox" style="width:auto"
+${selecionadas.has(q.id)?"checked":""}
+onchange="selecionar('${q.id}',this.checked)">
+<div>
+<h3>${esc(tituloQ(q))}</h3>
+<span class="tag">${esc(q.grande_area||"Sem área")}</span>
+<span class="tag">${esc(q.tema_geral||"Sem tema")}</span>
+${q.tema_especifico?`<span class="tag">${esc(q.tema_especifico)}</span>`:""}
+${etiqueta(q)}
+${!q.classificacao_aprovada?'<span class="tag warn">Tema sugerido</span>':""}
+</div></div>
+<button class="btn" onclick="abrirQuestao('${q.id}')">Abrir</button>
+</div>
+<p class="preview">${esc(q.enunciado)}</p>
+</div>`;
+}
+function telaQuestoes(){
+let lista=filtradas();
+let temas=questoes.filter(q=>!filtro.area||q.grande_area===filtro.area)
+.map(q=>q.tema_geral);
+let subs=questoes.filter(q=>
+(!filtro.area||q.grande_area===filtro.area)&&
+(!filtro.tema||q.tema_geral===filtro.tema))
+.map(q=>q.tema_especifico);
+return cabecalho("Banco de questões","Filtre por prova, área, tema e desempenho.")+
+`<div class="card">
+<div class="filters">
+<div><label>Prova</label><select onchange="mudarFiltro('prova',this.value)">
+<option value="">Todas as provas</option>
+${provas.map(p=>`<option value="${p.id}" ${filtro.prova===p.id?"selected":""}>${esc(nomeProva(p))}</option>`).join("")}
+</select></div>
+<div><label>Grande área</label><select onchange="mudarFiltro('area',this.value)">
+${opcao(areas,filtro.area)}</select></div>
+<div><label>Tema geral</label><select onchange="mudarFiltro('tema',this.value)">
+${opcao(temas,filtro.tema)}</select></div>
+<div><label>Subtema</label><select onchange="mudarFiltro('sub',this.value)">
+${opcao(subs,filtro.sub)}</select></div>
+<div><label>Desempenho</label><select onchange="mudarFiltro('status',this.value)">
+${opcao(["acertei","errei","nao_fiz","anulada"],filtro.status)}
+</select></div>
+<div><label>Pesquisar texto</label>
+<input value="${esc(filtro.busca)}" placeholder="Palavra-chave"
+onchange="mudarFiltro('busca',this.value)"></div>
+</div>
+<div class="row between">
+<span class="small">${lista.length} questões encontradas</span>
+<div class="row">
+<button class="btn" onclick="limparFiltros()">Limpar filtros</button>
+<button class="btn" onclick="selecionarTodas()">Selecionar resultados</button>
+</div></div></div>
+<div class="card">
+<div class="row between">
+<b>${selecionadas.size} questões selecionadas</b>
+<div class="row">
+<button class="btn" onclick="classificarLote()" ${!selecionadas.size?"disabled":""}>Classificar em lote</button>
+<button class="btn" onclick="criarColecao()" ${!selecionadas.size?"disabled":""}>Criar coleção</button>
+<button class="btn primary" onclick="copiarSelecao()" ${!selecionadas.size?"disabled":""}>Copiar para ChatGPT</button>
+</div></div>
+${lista.map(linhaQ).join("")||'<div class="empty">Nenhuma questão encontrada.</div>'}
+</div>`;
+}
+function selecionar(id,on){
+on?selecionadas.add(id):selecionadas.delete(id);
+render();
+}
+function selecionarTodas(){
+filtradas().forEach(q=>selecionadas.add(q.id));render();
+}
+
+function modal(html){
+$("modalRoot").innerHTML=`<div class="modal-bg" onclick="if(event.target===this)fechar()">
+<div class="modal">${html}</div></div>`;
+}
+function fechar(){
+$("modalRoot").innerHTML="";questaoAberta=null;
+}
+function abrirQuestao(id){
+let q=questoes.find(x=>x.id===id);
+if(!q)return;
+questaoAberta=id;
+let alts=Object.entries(q.alternativas||{}).map(([l,v])=>
+`<div class="alternative"><b>${esc(l)})</b> ${esc(v)}</div>`).join("");
+let imgs=(q.imagens||[]).map(i=>{
+let img=imagens.find(x=>x.id===i);
+return img?`<img class="qimage" src="${URL.createObjectURL(img.blob)}">`:"";
+}).join("");
+modal(`
+<div class="row between"><h2>${esc(tituloQ(q))}</h2>
+<button class="btn" onclick="fechar()">Fechar ×</button></div>
+<div class="two">
+<section>
+<div class="question">${esc(q.enunciado)}</div>
+${alts}${imgs}
+<div class="notice">Gabarito: ${esc(q.gabarito||"Não informado")} · Sua resposta: ${esc(q.minha_resposta||"Não informada")}</div>
+</section>
+<section>
+<div class="card">
+<h2>Classificação</h2>
+<div class="field"><label>Grande área</label>
+<select id="edArea">${opcao(areas,q.grande_area,"Selecione")}</select></div>
+<div class="field"><label>Tema geral</label>
+<input id="edTema" list="temasExistentes" value="${esc(q.tema_geral)}">
+<datalist id="temasExistentes">
+${[...new Set(questoes.map(x=>x.tema_geral).filter(Boolean))]
+.map(x=>`<option value="${esc(x)}">`).join("")}
+</datalist></div>
+<div class="field"><label>Subtema</label>
+<input id="edSub" value="${esc(q.tema_especifico)}"></div>
+<div class="field"><label>Desempenho</label>
+<select id="edStatus">
+${[["nao_fiz","Não fiz"],["acertei","Acertei"],
+["errei","Errei"],["anulada","Anulada"]].map(([v,t])=>
+`<option value="${v}" ${q.situacao===v?"selected":""}>${t}</option>`
+).join("")}</select></div>
+<div class="field"><label>Minha resposta</label>
+<input id="edMinha" value="${esc(q.minha_resposta)}"></div>
+<div class="field"><label>Gabarito</label>
+<input id="edGab" value="${esc(q.gabarito)}"></div>
+<div class="field"><label>Anotações</label>
+<textarea id="edNotas">${esc(q.comentario)}</textarea></div>
+<div class="row">
+<button class="btn primary" onclick="salvarQuestao()">Salvar e aprovar tema</button>
+<button class="btn" onclick="copiarQuestoes(['${q.id}'])">Copiar prompt</button>
+<button class="btn" onclick="abrirChat(['${q.id}'])">ChatGPT</button>
+</div>
+</div></section></div>`);
+}
+async function salvarQuestao(){
+let q=questoes.find(x=>x.id===questaoAberta);
+if(!q)return;
+q={...q,grande_area:$("edArea").value,
+tema_geral:clean($("edTema").value),
+tema_especifico:clean($("edSub").value),
+situacao:$("edStatus").value,
+minha_resposta:clean($("edMinha").value),
+gabarito:clean($("edGab").value),
+comentario:$("edNotas").value,
+classificacao_aprovada:true};
+await salvar("questoes",q);fechar();await atualizar();
+}
+function classificarLote(){
+modal(`<div class="row between"><h2>Classificar em lote</h2>
+<button class="btn" onclick="fechar()">Fechar</button></div>
+<p class="small">${selecionadas.size} questões selecionadas. Campos vazios não serão modificados.</p>
+<div class="field"><label>Grande área</label>
+<select id="lArea">${opcao(areas,"","Não alterar")}</select></div>
+<div class="field"><label>Tema geral</label><input id="lTema"></div>
+<div class="field"><label>Subtema</label><input id="lSub"></div>
+<div class="field"><label>Desempenho</label>
+<select id="lStatus"><option value="">Não alterar</option>
+<option value="acertei">Acertei</option><option value="errei">Errei</option>
+<option value="nao_fiz">Não fiz</option><option value="anulada">Anulada</option>
+</select></div>
+<button class="btn primary" onclick="aplicarLote()">Aplicar alterações</button>`);
+}
+async function aplicarLote(){
+let a=$("lArea").value,t=clean($("lTema").value),
+s=clean($("lSub").value),st=$("lStatus").value;
+for(let q of questoes.filter(x=>selecionadas.has(x.id))){
+if(a)q.grande_area=a;
+if(t)q.tema_geral=t;
+if(s)q.tema_especifico=s;
+if(st)q.situacao=st;
+q.classificacao_aprovada=true;
+await salvar("questoes",q);
+}
+selecionadas.clear();fechar();await atualizar();
+}
+
+function promptQuestoes(ids){
+let lista=ids.map(id=>questoes.find(q=>q.id===id)).filter(Boolean);
+return `Quero estudar estas questões de residência médica em conjunto.
+Analise os temas centrais, padrões de cobrança, todas as alternativas
+e pegadinhas. Faça uma revisão aprofundada do conteúdo.
+Prepare um resumo para o caderno somente quando eu solicitar.
+
+`+lista.map(q=>`
+${tituloQ(q)}
+ÁREA: ${q.grande_area}
+TEMA: ${q.tema_geral}
+SUBTEMA: ${q.tema_especifico}
+ENUNCIADO:
+${q.enunciado}
+${Object.entries(q.alternativas||{}).map(([a,v])=>a+") "+v).join("\n")}
+GABARITO: ${q.gabarito||"Não informado"}
+MINHA RESPOSTA: ${q.minha_resposta||"Não informada"}
+RESULTADO: ${situacao(q)}
+${q.imagens?.length?"OBS.: Esta questão contém imagens, que devem ser anexadas separadamente.":""}
+`).join("\n---------------------\n");
+}
+async function copiarTexto(texto){
+try{
+await navigator.clipboard.writeText(texto);
+aviso("Prompt copiado. Cole na conversa desejada.");
+}catch{
+modal(`<h2>Copiar prompt</h2>
+<textarea style="height:300px" id="txtCopy">${esc(texto)}</textarea>
+<p>Selecione e copie o conteúdo.</p>
+<button class="btn" onclick="fechar()">Fechar</button>`);
+}
+}
+function copiarQuestoes(ids){copiarTexto(promptQuestoes(ids))}
+function copiarSelecao(){copiarQuestoes([...selecionadas])}
+function abrirChat(ids){
+copiarTexto(promptQuestoes(ids));
+window.open("https://chatgpt.com/","_blank");
+}
+
+async function criarColecao(){
+let nome=prompt("Nome da coleção:");
+if(!clean(nome))return;
+await salvar("colecoes",{
+id:"colecao-"+uuid(),nome:clean(nome),
+ids:[...selecionadas],created:new Date().toISOString()
+});
+selecionadas.clear();await atualizar();aviso("Coleção criada.");
+}
+function telaColecoes(){
+return cabecalho("Coleções de estudo","Reúna questões relacionadas de diferentes provas.")+
+`<div class="card">
+${colecoes.map(c=>`<div class="item row between">
+<div><h3>${esc(c.nome)}</h3><div class="small">${c.ids.length} questões</div></div>
+<div class="row">
+<button class="btn" onclick="abrirColecao('${c.id}')">Abrir</button>
+<button class="btn danger" onclick="apagarColecao('${c.id}')">Excluir</button>
+</div></div>`).join("")||'<div class="empty">Nenhuma coleção criada.</div>'}
+</div>`;
+}
+function abrirColecao(id){
+let c=colecoes.find(x=>x.id===id);if(!c)return;
+let lista=c.ids.map(i=>questoes.find(q=>q.id===i)).filter(Boolean);
+modal(`<div class="row between"><h2>${esc(c.nome)}</h2>
+<button class="btn" onclick="fechar()">Fechar</button></div>
+<div class="row">
+<button class="btn primary" onclick="copiarQuestoes(${JSON.stringify(c.ids).replace(/"/g,"&quot;")})">Copiar questões</button>
+<button class="btn" onclick="abrirChat(${JSON.stringify(c.ids).replace(/"/g,"&quot;")})">ChatGPT</button>
+</div>
+${lista.map(q=>`<div class="item row between"><div>
+<b>${esc(tituloQ(q))}</b>
+<div class="small">${esc(q.tema_geral)}</div></div>
+<button class="btn" onclick="abrirQuestao('${q.id}')">Abrir</button>
+</div>`).join("")}`);
+}
+async function apagarColecao(id){
+if(!confirm("Excluir a coleção? As questões serão preservadas."))return;
+await excluir("colecoes",id);await atualizar();
+}
+
+function grupos(lista,campo){
+let mapa=new Map();
+for(let q of lista){
+let k=q[campo]||"Sem classificação";
+if(!mapa.has(k))mapa.set(k,[]);
+mapa.get(k).push(q);
+}
+return [...mapa].map(([nome,qs])=>({nome,...desempenho(qs)}))
+.sort((a,b)=>b.feitas-a.feitas);
+}
+function grafico(lista){
+return lista.map(g=>`<div class="chartrow">
+<div>${esc(g.nome)}<div class="small">${g.acertos} acertos · ${g.erros} erros · ${g.feitas} feitas</div></div>
+<div class="bar"><div class="fill" style="width:${g.indice||0}%"></div></div>
+<b>${percentual(g.indice)}</b></div>`).join("")||
+'<div class="empty">Nenhum dado disponível.</div>';
+}
+function telaDesempenho(){
+let lista=questoes.filter(q=>!relatorioProva||q.provaId===relatorioProva);
+let s=desempenho(lista);
+return cabecalho("Desempenho","Relatório de acertos e erros por área e assunto.")+
+`<div class="card">
+<label>Selecionar prova</label>
+<select onchange="relatorioProva=this.value;render()">
+<option value="">Todas as provas</option>
+${provas.map(p=>`<option value="${p.id}" ${relatorioProva===p.id?"selected":""}>${esc(nomeProva(p))}</option>`).join("")}
+</select></div>
+${indicadores(s)}
+<div class="notice" style="margin-bottom:16px">
+Questões feitas = acertos + erros. Índice = acertos ÷ questões feitas × 100.
+Não feitas e anuladas ficam fora do índice.
+</div>
+<div class="two">
+<div class="card"><h2>Por grande área</h2>${grafico(grupos(lista,"grande_area"))}</div>
+<div class="card"><h2>Por tema geral</h2>${grafico(grupos(lista,"tema_geral"))}</div>
+<div class="card"><h2>Por subtema</h2>${grafico(grupos(lista,"tema_especifico"))}</div>
+<div class="card"><h2>Principais erros</h2>
+${grupos(lista,"tema_geral").filter(g=>g.erros)
+.sort((a,b)=>b.erros-a.erros).map(g=>
+`<div class="item row between"><span>${esc(g.nome)}</span>
+<b>${g.erros} erros / ${g.feitas} feitas</b></div>`).join("")||
+'<p>Sem erros registrados.</p>'}
+</div></div>
+<button class="btn primary" onclick="exportarCSV()">Exportar relatório CSV</button>`;
+}
+function exportarCSV(){
+let lista=questoes.filter(q=>!relatorioProva||q.provaId===relatorioProva);
+let linhas=[["Nível","Tema","Total","Feitas","Acertos","Erros","Não fiz","Anuladas","Índice"]];
+for(let [campo,nivel] of [
+["grande_area","Grande área"],["tema_geral","Tema"],
+["tema_especifico","Subtema"]]){
+for(let g of grupos(lista,campo))
+linhas.push([nivel,g.nome,g.total,g.feitas,g.acertos,g.erros,
+g.nao,g.anuladas,percentual(g.indice)]);
+}
+let csv="\ufeff"+linhas.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(";")).join("\n");
+baixar(new Blob([csv],{type:"text/csv;charset=utf-8"}),"MEUBANCO-RELATORIO.csv");
+}
+function baixar(blob,nome){
+let url=URL.createObjectURL(blob),a=document.createElement("a");
+a.href=url;a.download=nome;document.body.appendChild(a);
+a.click();a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+function telaBackup(){
+return cabecalho("Importar e fazer backup",
+"Transfira provas e coleções entre iPad, computador e outros dispositivos.")+
+`<div class="two">
+<div class="card">
+<h2>Importar provas</h2>
+<p>Envie um ZIP com manifest.json, textos e imagens ou um JSON compatível.</p>
+<button class="btn primary" onclick="$('importFile').click()">Selecionar ZIP / JSON</button>
+<p class="small">Provas importadas anteriormente não serão duplicadas.</p>
+</div>
+<div class="card">
+<h2>Backup completo</h2>
+<p>Exporte todas as provas, imagens, classificações, respostas e coleções.</p>
+<button class="btn primary" onclick="exportarBackup()">Exportar banco completo ZIP</button>
+<p class="small">Importe esse mesmo ZIP no outro aparelho para restaurar o banco.</p>
+</div>
+</div>
+<div class="card"><h2>Importante</h2>
+<p>Os dados ficam no navegador deste aparelho (IndexedDB). Faça backup regularmente. Apagar os dados do navegador pode excluir o banco local.</p>
+<button class="btn danger" onclick="apagarTudo()">Apagar todo o banco deste aparelho</button>
+</div>`;
+}
+
+function normalizarProva(p){
+let nome=clean(p.nome||p.prova||"Prova");
+let ano=p.ano||"";
+let id=clean(p.id)||"prova-"+nome.toLowerCase()
+.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+.replace(/[^a-z0-9]+/g,"-")+"-"+ano;
+return {id,nome,ano};
+}
+function normalizarQuestao(q,p){
+let status=clean(q.situacao).toLowerCase();
+if(!["acertei","errei","nao_fiz","anulada"].includes(status)){
+status="nao_fiz";
+}
+return {
+id:clean(q.id)||p.id+"-q"+(q.numero||q.questao),
+provaId:p.id,numero:q.numero||q.questao||0,
+enunciado:String(q.enunciado||q.texto||""),
+alternativas:q.alternativas||{},
+grande_area:clean(q.grande_area||q.area),
+tema_geral:clean(q.tema_geral||q.tema),
+tema_especifico:clean(q.tema_especifico||q.subtema),
+classificacao_aprovada:!!q.classificacao_aprovada,
+situacao:status,
+gabarito:clean(q.gabarito),
+minha_resposta:clean(q.minha_resposta),
+comentario:String(q.comentario||""),
+imagens:q.imagens||[]
+};
+}
+
+async function importarJSON(data,nome){
+if(data.tipo==="MEUBANCO_BACKUP_V3"||
+(Array.isArray(data.provas)&&Array.isArray(data.questoes))){
+await restaurar(data);return;
+}
+let lista=data.questoes||data.questions;
+if(!Array.isArray(lista))throw Error("JSON sem questões.");
+let p=normalizarProva(data.prova||{
+nome:data.nome||nome.replace(/\.json$/i,""),ano:data.ano||""});
+await importarRegistros([p],lista.map(q=>normalizarQuestao(q,p)),[]);
+}
+async function importarZIP(file){
+if(typeof JSZip==="undefined")throw Error("Biblioteca ZIP indisponível.");
+let zip=await JSZip.loadAsync(file);
+let entrada=zip.file("manifest.json")||zip.file("backup.json");
+if(!entrada)throw Error("ZIP sem manifest.json ou backup.json.");
+let data=JSON.parse(await entrada.async("string"));
+if(data.tipo==="MEUBANCO_BACKUP_V3"){
+await restaurar(data,zip);return;
+}
+let p=normalizarProva(data.prova||{nome:file.name,ano:""});
+let lista=(data.questoes||[]).map(q=>normalizarQuestao(q,p));
+let imgs=[];
+for(let q of lista){
+let ids=[];
+for(let caminho of q.imagens){
+if(typeof caminho!=="string"||caminho.includes(".."))continue;
+let f=zip.file(caminho.replace(/^\/+/,""));
+if(!f)continue;
+let id=p.id+"::"+caminho;
+imgs.push({id,provaId:p.id,caminho,
+blob:await f.async("blob")});
+ids.push(id);
+}
+q.imagens=ids;
+}
+await importarRegistros([p],lista,imgs);
+}
+async function importarRegistros(ps,qs,imgs){
+let repetidas=qs.filter(q=>questoes.some(a=>a.id===q.id));
+let substituir=false;
+if(repetidas.length){
+substituir=confirm(repetidas.length+" questões já existem.\n"+
+"OK = substituir registros existentes.\n"+
+"Cancelar = preservar os existentes e adicionar apenas novas questões.");
+}
+for(let p of ps)await salvar("provas",p);
+for(let im of imgs)await salvar("imagens",im);
+let total=0;
+for(let q of qs){
+if(repetidas.some(x=>x.id===q.id)&&!substituir)continue;
+await salvar("questoes",q);total++;
+}
+await atualizar();aviso(total+" questões importadas ou atualizadas.");
+}
+async function restaurar(data,zip){
+if(!Array.isArray(data.questoes))throw Error("Backup inválido.");
+let imgs=[];
+if(zip){
+for(let im of data.imagens||[]){
+let f=zip.file(im.arquivo);
+if(f)imgs.push({
+id:im.id,provaId:im.provaId,caminho:im.caminho,
+blob:await f.async("blob")
+});
+}
+}
+await importarRegistros(data.provas||[],data.questoes,imgs);
+for(let c of data.colecoes||[])await salvar("colecoes",c);
+await atualizar();
+}
+async function exportarBackup(){
+if(typeof JSZip==="undefined"){aviso("Biblioteca ZIP indisponível.");return}
+let zip=new JSZip(),imgs=[];
+for(let im of imagens){
+let ext=(im.caminho||"imagem.png").split(".").pop().toLowerCase();
+if(!/^(jpg|jpeg|png|gif|webp|svg)$/.test(ext))ext="png";
+let arquivo="imagens/"+im.id.replace(/[^a-z0-9_-]/gi,"_")+"."+ext;
+zip.file(arquivo,im.blob);
+imgs.push({id:im.id,provaId:im.provaId,caminho:im.caminho,arquivo});
+}
+zip.file("backup.json",JSON.stringify({
+tipo:"MEUBANCO_BACKUP_V3",versao:3,
+provas,questoes,colecoes,imagens:imgs,
+criado:new Date().toISOString()
+},null,2));
+let blob=await zip.generateAsync({type:"blob",compression:"DEFLATE"});
+baixar(blob,"MEUBANCO-BACKUP-"+new Date().toISOString().slice(0,10)+".zip");
+}
+async function apagarProva(id){
+if(!confirm("Excluir esta prova e todas as questões e imagens?"))return;
+for(let q of questoes.filter(x=>x.provaId===id))
+await excluir("questoes",q.id);
+for(let im of imagens.filter(x=>x.provaId===id))
+await excluir("imagens",im.id);
+await excluir("provas",id);await atualizar();
+}
+async function apagarTudo(){
+if(prompt("Digite APAGAR para confirmar a exclusão de todo o banco:")!=="APAGAR")return;
+for(let t of ["provas","questoes","colecoes","imagens"])await limpar(t);
+await atualizar();
+}
+
+$("importFile").addEventListener("change",async e=>{
+let files=[...e.target.files];e.target.value="";
+for(let file of files){
+try{
+if(file.name.toLowerCase().endsWith(".zip"))
+await importarZIP(file);
+else if(file.name.toLowerCase().endsWith(".json"))
+await importarJSON(JSON.parse(await file.text()),file.name);
+else throw Error("Arquivo incompatível.");
+}catch(err){console.error(err);aviso("Erro: "+err.message)}
+}
+});
+
+(async()=>{
+try{
+db=await banco();
+await atualizar();
+}catch(e){
+$("app").innerHTML="<h2>Não foi possível abrir o banco local.</h2><p>Abra pelo GitHub Pages, em HTTPS, fora do modo privado.</p>";
+console.error(e);
+}
+})();
 </script>
 </body>
 </html>
