@@ -1,725 +1,1456 @@
-
-<!doctype html>
+ 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f7f9">
 <title>MEUBANCO</title>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <style>
-:root{--bg:#f5f7f9;--ink:#253343;--muted:#778596;--line:#e0e6ec;--blue:#285f79;--light:#eaf3f7;--red:#b54848;--green:#207a57}
+:root{--bg:#f5f7f9;--ink:#253343;--muted:#778596;--line:#e0e6ec;--blue:#285f79;--soft:#edf4f7;--red:#b54848;--green:#207a57}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,textarea,select{font:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-button:disabled{opacity:.45;cursor:not-allowed}
-header{background:#fff;border-bottom:1px solid var(--line);padding:17px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.logo{font-weight:800;letter-spacing:.04em;font-size:21px}
-.logo small{display:block;color:var(--muted);font-size:11px;font-weight:400}
+button:disabled{opacity:.45;cursor:default}
+header{background:white;border-bottom:1px solid var(--line);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-size:21px;font-weight:800;letter-spacing:.4px}
+.logo small{display:block;font-size:11px;color:var(--muted);font-weight:400}
 nav{display:flex;gap:5px;overflow:auto}
-nav button{border:0;background:none;color:var(--muted);padding:10px;border-radius:8px;white-space:nowrap;font-size:13px}
-nav button.active{background:var(--light);color:var(--blue);font-weight:700}
-main{max-width:1250px;margin:auto;padding:25px 18px 80px}
-h1{font-size:26px;margin:0 0 4px}
-h2{font-size:18px;margin:0 0 12px}
-h3{font-size:15px;margin:0}
-p{line-height:1.6}
-.sub,.muted{color:var(--muted)}
-.sub{font-size:13px;margin-bottom:22px}
-.small{font-size:12px;color:var(--muted)}
-.card,.metric{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+nav button{border:0;background:transparent;color:var(--muted);padding:10px;border-radius:9px;white-space:nowrap}
+nav button.active{background:var(--soft);color:var(--blue);font-weight:700}
+main{max-width:1250px;margin:auto;padding:24px 17px 80px}
+h1{font-size:26px;margin:0 0 5px}
+h2{font-size:19px;margin:0 0 12px}
+h3{font-size:15px;margin:0 0 5px}
+p{line-height:1.65}
+.small,.sub{font-size:12px;color:var(--muted)}
+.sub{margin-bottom:22px}
+.card,.metric{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:15px}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.metric strong{font-size:28px;display:block;margin:3px 0}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.metric strong{display:block;font-size:28px;margin:5px 0}
 .row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .between{justify-content:space-between}
-.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:10px 13px;font-size:13px;font-weight:650}
-.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn{background:white;border:1px solid var(--line);border-radius:9px;padding:11px 14px;color:var(--ink);font-size:13px;font-weight:650}
+.btn.primary{background:var(--blue);color:white;border-color:var(--blue)}
 .btn.danger{color:var(--red)}
-label{font-size:12px;color:var(--muted);display:block;font-weight:650;margin-bottom:6px}
-input:not([type=checkbox]),select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;color:var(--ink)}
-textarea{resize:vertical;min-height:95px}
+label{display:block;color:var(--muted);font-size:12px;font-weight:650;margin-bottom:6px}
+input:not([type=checkbox]),select,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px;background:white;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
 .field{margin-bottom:13px}
 .filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .item{padding:15px 0;border-bottom:1px solid var(--line)}
 .item:last-child{border:0}
 .preview{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.tag{display:inline-block;padding:4px 9px;background:#eff2f5;border-radius:20px;font-size:11px;margin:3px}
-.tag.good{color:var(--green);background:#e7f5ed}
-.tag.bad{color:var(--red);background:#ffeded}
-.tag.warn{color:#8a621a;background:#fff3d9}
-.check{width:20px;height:20px;accent-color:var(--blue)}
-.modal-bg{position:fixed;inset:0;z-index:10;background:#1926348c;display:flex;align-items:center;justify-content:center;padding:14px}
-.modal{background:white;border-radius:16px;padding:20px;width:min(100%,1120px);max-height:94dvh;overflow:auto}
-.modal-head{position:sticky;top:-20px;background:white;z-index:2;padding:5px 0 12px;border-bottom:1px solid var(--line);margin-bottom:15px}
-.modal-foot{position:sticky;bottom:-20px;z-index:2;background:white;padding:14px 0 5px;border-top:1px solid var(--line);margin-top:10px}
-.question{white-space:pre-wrap;line-height:1.75}
-.alternative{padding:12px;margin:8px 0;border:1px solid var(--line);border-radius:10px;white-space:pre-wrap}
-.qimage{display:block;max-width:100%;max-height:430px;object-fit:contain;border-radius:10px;margin:12px 0}
-.notice{background:var(--light);color:#416478;border-radius:10px;padding:12px;font-size:13px}
-.empty{text-align:center;padding:38px 10px;color:var(--muted)}
-.chartrow{display:grid;grid-template-columns:minmax(100px,1fr) minmax(70px,2fr) 65px;gap:10px;align-items:center;margin:13px 0;font-size:12px}
-.bar{height:11px;border-radius:12px;background:#edf1f4;overflow:hidden}
+.tag{display:inline-block;background:#f0f3f6;border-radius:20px;padding:5px 9px;font-size:11px;margin:3px}
+.good{background:#e7f5ed;color:var(--green)}
+.bad{background:#ffeded;color:var(--red)}
+.warn{background:#fff2d7;color:#91641a}
+.check{width:19px;height:19px;accent-color:var(--blue)}
+.choices{display:flex;flex-wrap:wrap;gap:7px;max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:10px}
+.choice{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid var(--line);border-radius:20px;color:var(--ink);font-weight:500;margin:0}
+.choice input{accent-color:var(--blue)}
+.modal-bg{position:fixed;inset:0;background:#17263791;z-index:20;display:flex;align-items:center;justify-content:center;padding:10px}
+.modal{background:white;width:min(100%,1120px);max-height:96dvh;overflow:auto;border-radius:16px;padding:20px}
+.modal-head{position:sticky;top:-20px;background:white;z-index:3;border-bottom:1px solid var(--line);padding:5px 0 12px;margin-bottom:15px}
+.modal-foot{position:sticky;bottom:-20px;z-index:3;background:white;border-top:1px solid var(--line);padding:13px 0 5px;margin-top:16px}
+.question{white-space:pre-wrap;font-size:15px;line-height:1.75}
+.alternative{border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;white-space:pre-wrap}
+.qimage{display:block;max-width:100%;max-height:440px;object-fit:contain;margin:12px 0}
+.notice{background:var(--soft);border-radius:10px;padding:13px;color:#45687b;font-size:13px;white-space:pre-line}
+.empty{text-align:center;padding:38px;color:var(--muted)}
+.chartrow{display:grid;grid-template-columns:minmax(115px,1.3fr) minmax(70px,2fr) 65px;gap:10px;align-items:center;margin:13px 0;font-size:12px}
+.bar{height:11px;background:#edf1f4;border-radius:12px;overflow:hidden}
 .fill{height:100%;background:#438ca5}
-.section-space{margin-top:20px}
-.subchoices{display:flex;flex-wrap:wrap;gap:7px;max-height:210px;overflow:auto;padding:8px;border:1px solid var(--line);border-radius:10px}
-.subchoice{padding:7px 10px;border:1px solid var(--line);border-radius:20px;font-size:12px;background:#fff;display:flex;align-items:center;gap:6px}
-.subchoice input{accent-color:var(--blue)}
-.text-btn{background:none;color:var(--blue);border:0;padding:3px;text-decoration:underline}
-@media(max-width:850px){header{display:block;padding:14px}nav{margin-top:10px}.filters,.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{padding:14px}.modal-head{top:-14px}.modal-foot{bottom:-14px}}
-@media(max-width:550px){main{padding:16px 12px}.grid,.two,.filters{grid-template-columns:1fr}.modal{max-height:97dvh}.modal-bg{padding:5px}.chartrow{grid-template-columns:100px 1fr 55px}}
+.step{border-left:3px solid #a5cbdc;padding-left:18px}
+.stepnumber{font-weight:800;color:var(--blue);font-size:11px;letter-spacing:.06em}
+.hero{background:#fbfdff;border-color:#c3dbe6}
+@media(max-width:850px){header{display:block;padding:13px}nav{margin-top:10px}.grid,.two,.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{padding:14px}.modal-head{top:-14px}.modal-foot{bottom:-14px}}
+@media(max-width:550px){main{padding:16px 11px}.grid,.two,.filters{grid-template-columns:1fr}.modal-bg{padding:4px}.modal{max-height:98dvh}.chartrow{grid-template-columns:100px 1fr 55px}}
 </style>
 </head>
 <body>
-<header><div class="logo">MEUBANCO<small>Banco pessoal de questões</small></div><nav id="nav"></nav></header>
+
+<header>
+<div class="logo">MEUBANCO<small>Banco pessoal de questões</small></div>
+<nav id="nav"></nav>
+</header>
 <main id="app"></main>
 <div id="modalRoot"></div>
-<input id="importFile" type="file" accept=".zip,.json" multiple hidden>
+<input type="file" id="fileInput" accept=".zip,.json" multiple hidden>
+
 <script>
 "use strict";
 
 const $=id=>document.getElementById(id);
 const clean=v=>String(v??"").trim();
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+})[c]);
 const enc=v=>encodeURIComponent(String(v));
 const dec=v=>decodeURIComponent(v);
-const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2);
+const uid=()=>crypto.randomUUID();
 
-const areas=["Clínica Médica","Cirurgia Geral","Ginecologia e Obstetrícia","Pediatria","Medicina Preventiva","Outras"];
-const tabs=[["inicio","Início"],["provas","Provas"],["questoes","Questões"],["colecoes","Coleções"],["desempenho","Desempenho"],["backup","Importar nova prova / Backup"]];
-const statuses=["acertei","errei","nao_fiz","anulada","a_conferir"];
+const AREAS=[
+"Clínica Médica",
+"Cirurgia Geral",
+"Ginecologia e Obstetrícia",
+"Pediatria",
+"Medicina Preventiva",
+"Outras"
+];
 
-let db,provas=[],questoes=[],colecoes=[],imagens=[];
-let tela="inicio",aberta=null,navIds=[],imageUrls=[];
-let selecionadas=new Set();
-let filtro={prova:"",area:"",tema:"",subs:[],status:"",busca:""};
-let relatorio={provas:[],area:"",tema:"",subs:[],detail:"",visao:"macro"};
+const STATES=["acertei","errei","nao_fiz","anulada","a_conferir"];
+const TABS=[
+["inicio","Início"],
+["provas","Provas"],
+["questoes","Questões"],
+["colecoes","Coleções"],
+["desempenho","Desempenho"],
+["backup","Importar nova prova / Backup"]
+];
 
-function avisar(s){alert(s)}
-function abrirDB(){
-return new Promise((ok,err)=>{
-let r=indexedDB.open("MEUBANCO_V3",1);
-r.onupgradeneeded=()=>{
-for(let t of ["provas","questoes","colecoes","imagens"])
-if(!r.result.objectStoreNames.contains(t))
-r.result.createObjectStore(t,{keyPath:"id"});
+let db;
+let provas=[];
+let questoes=[];
+let colecoes=[];
+let imagens=[];
+let page="inicio";
+let current=null;
+let navigation=[];
+let imageURLs=[];
+let selected=new Set();
+
+let filter={
+provas:[],area:"",tema:"",subs:[],status:"",busca:""
 };
-r.onsuccess=()=>ok(r.result);
-r.onerror=()=>err(r.error);
+
+let report={
+provas:[],area:"",tema:"",subs:[],detail:"",view:"macro"
+};
+
+/* ARMAZENAMENTO */
+
+function openDB(){
+return new Promise((resolve,reject)=>{
+const r=indexedDB.open("MEUBANCO_V3",1);
+r.onupgradeneeded=()=>{
+for(const name of ["provas","questoes","colecoes","imagens"]){
+if(!r.result.objectStoreNames.contains(name)){
+r.result.createObjectStore(name,{keyPath:"id"});
+}
+}
+};
+r.onsuccess=()=>resolve(r.result);
+r.onerror=()=>reject(r.error);
 });
 }
-function getAll(t){
-return new Promise((ok,err)=>{
-let r=db.transaction(t).objectStore(t).getAll();
-r.onsuccess=()=>ok(r.result);
-r.onerror=()=>err(r.error);
+
+function getAll(table){
+return new Promise((resolve,reject)=>{
+const r=db.transaction(table).objectStore(table).getAll();
+r.onsuccess=()=>resolve(r.result);
+r.onerror=()=>reject(r.error);
 });
 }
-function put(t,v){
-return new Promise((ok,err)=>{
-let r=db.transaction(t,"readwrite");
-r.objectStore(t).put(v);
-r.oncomplete=ok;
-r.onerror=()=>err(r.error);
+
+function put(table,item){
+return new Promise((resolve,reject)=>{
+const tx=db.transaction(table,"readwrite");
+tx.objectStore(table).put(item);
+tx.oncomplete=resolve;
+tx.onerror=()=>reject(tx.error);
 });
 }
-function del(t,id){
-return new Promise((ok,err)=>{
-let r=db.transaction(t,"readwrite");
-r.objectStore(t).delete(id);
-r.oncomplete=ok;
-r.onerror=()=>err(r.error);
+
+function remove(table,id){
+return new Promise((resolve,reject)=>{
+const tx=db.transaction(table,"readwrite");
+tx.objectStore(table).delete(id);
+tx.oncomplete=resolve;
+tx.onerror=()=>reject(tx.error);
 });
 }
-function clear(t){
-return new Promise((ok,err)=>{
-let r=db.transaction(t,"readwrite");
-r.objectStore(t).clear();
-r.oncomplete=ok;
-r.onerror=()=>err(r.error);
+
+function wipe(table){
+return new Promise((resolve,reject)=>{
+const tx=db.transaction(table,"readwrite");
+tx.objectStore(table).clear();
+tx.oncomplete=resolve;
+tx.onerror=()=>reject(tx.error);
 });
 }
+
 async function reload(draw=true){
-[provas,questoes,colecoes,imagens]=await Promise.all(["provas","questoes","colecoes","imagens"].map(getAll));
+[provas,questoes,colecoes,imagens]=await Promise.all(
+["provas","questoes","colecoes","imagens"].map(getAll)
+);
 if(draw)render();
 }
-function go(t){tela=t;selecionadas.clear();render();window.scrollTo(0,0)}
-function header(t,s){return `<h1>${esc(t)}</h1><div class="sub">${esc(s)}</div>`}
-function proof(q){return provas.find(x=>x.id===q.provaId)}
-function proofName(p){return p?`${p.nome}${String(p.nome).includes(String(p.ano))||!p.ano?"":" "+p.ano}`:"Prova"}
-function titleQ(q){return `${proofName(proof(q))} — Q${q.numero}`}
-function labelStatus(st){return ({acertei:"Acertei",errei:"Errei",nao_fiz:"Não fiz",anulada:"Anulada",a_conferir:"A conferir"})[st]||"A conferir"}
-function tag(q){
-let s=q.situacao;
-return `<span class="tag ${s==="acertei"?"good":s==="errei"?"bad":s==="anulada"||s==="a_conferir"?"warn":""}">${labelStatus(s)}</span>`;
+
+function go(p){
+page=p;
+selected.clear();
+render();
+window.scrollTo(0,0);
 }
-function perf(list){
-let feitas=list.filter(x=>x.situacao==="acertei"||x.situacao==="errei");
-let a=feitas.filter(x=>x.situacao==="acertei").length;
-return {total:list.length,feitas:feitas.length,acertos:a,erros:feitas.length-a,nao:list.filter(x=>x.situacao==="nao_fiz").length,anuladas:list.filter(x=>x.situacao==="anulada").length,pendentes:list.filter(x=>x.situacao==="a_conferir").length,indice:feitas.length?a/feitas.length*100:null};
+
+function heading(title,subtitle){
+return `<h1>${esc(title)}</h1><div class="sub">${esc(subtitle)}</div>`;
 }
-function pct(n){return n===null?"—":n.toFixed(1).replace(".",",")+"%"}
+
+function proof(q){
+return provas.find(p=>p.id===q.provaId);
+}
+
+function proofName(p){
+if(!p)return "Prova";
+const name=String(p.nome||"Prova");
+return name+(!p.ano||name.includes(String(p.ano))?"":" "+p.ano);
+}
+
+const titleQ=q=>proofName(proof(q))+" — Q"+q.numero;
+
+function statusName(s){
+return ({
+acertei:"Acertei",
+errei:"Errei",
+nao_fiz:"Não fiz",
+anulada:"Anulada",
+a_conferir:"A conferir"
+})[s]||"A conferir";
+}
+
+/* ACERTOS AUTOMÁTICOS */
+
+function validAnswer(value){
+const v=clean(value).toUpperCase();
+return /^[A-E]$/.test(v)?v:"";
+}
+
+function isAnnulled(value){
+return /\bANULAD[AO]\b/i.test(clean(value));
+}
+
+function calculateStatus(answer,key,empty="a_conferir"){
+if(isAnnulled(key))return "anulada";
+
+const a=validAnswer(answer);
+const g=validAnswer(key);
+
+if(a&&g)return a===g?"acertei":"errei";
+
+if(!a&&empty==="nao_fiz")return "nao_fiz";
+return "a_conferir";
+}
+
+function updateCalculated(){
+const a=$("edAnswer");
+const g=$("edKey");
+const result=$("calculatedResult");
+const manual=$("edManual");
+
+if(!a||!g||!result)return;
+
+const value=calculateStatus(a.value,g.value);
+result.textContent="Resultado automático: "+statusName(value)+
+(manual?.value!=="automatico"?" · Correção manual ativa":"");
+}
+
+/* ESTATÍSTICAS */
+
+function stats(list){
+const made=list.filter(q=>
+q.situacao==="acertei"||q.situacao==="errei"
+);
+const right=made.filter(q=>q.situacao==="acertei").length;
+return {
+total:list.length,
+made:made.length,
+right,
+wrong:made.length-right,
+nao:list.filter(q=>q.situacao==="nao_fiz").length,
+annulled:list.filter(q=>q.situacao==="anulada").length,
+pending:list.filter(q=>q.situacao==="a_conferir").length,
+rate:made.length?right/made.length*100:null
+};
+}
+
+const pct=n=>n===null?"—":n.toFixed(1).replace(".",",")+"%";
+
 function metrics(s){
-return `<div class="grid">
-<div class="metric"><span class="small">QUESTÕES NO BANCO</span><strong>${s.total}</strong></div>
-<div class="metric"><span class="small">QUESTÕES FEITAS</span><strong>${s.feitas}</strong></div>
-<div class="metric"><span class="small">ACERTOS / ERROS</span><strong>${s.acertos} / ${s.erros}</strong></div>
-<div class="metric"><span class="small">ÍNDICE DE ACERTOS</span><strong>${pct(s.indice)}</strong></div>
+return `<div class="grid" style="margin-bottom:16px">
+<div class="metric"><div class="small">QUESTÕES</div><strong>${s.total}</strong></div>
+<div class="metric"><div class="small">FEITAS</div><strong>${s.made}</strong></div>
+<div class="metric"><div class="small">ACERTOS / ERROS</div><strong>${s.right} / ${s.wrong}</strong></div>
+<div class="metric"><div class="small">ÍNDICE DE ACERTOS</div><strong>${pct(s.rate)}</strong></div>
 </div>`;
 }
+
+function options(values,current,placeholder="Todos"){
+return `<option value="">${esc(placeholder)}</option>`+
+[...new Set(values.filter(Boolean))]
+.sort((a,b)=>a.localeCompare(b,"pt-BR"))
+.map(v=>`<option value="${esc(v)}" ${current===v?"selected":""}>${esc(v)}</option>`)
+.join("");
+}
+
 function render(){
-$("nav").innerHTML=tabs.map(([k,v])=>`<button class="${tela===k?"active":""}" onclick="go('${k}')">${v}</button>`).join("");
-$("app").innerHTML=({inicio:home,provas:pageProvas,questoes:pageQuestions,colecoes:pageCollections,desempenho:pagePerformance,backup:pageBackup})[tela]();
+$("nav").innerHTML=TABS.map(([id,name])=>
+`<button class="${page===id?"active":""}" onclick="go('${id}')">${name}</button>`
+).join("");
+
+$("app").innerHTML=({
+inicio:home,
+provas:proofPage,
+questoes:questionPage,
+colecoes:collectionPage,
+desempenho:performancePage,
+backup:backupPage
+})[page]();
 }
+
+/* INÍCIO */
+
 function home(){
-return header("Minha biblioteca","Suas provas, temas e coleções em um só lugar.")+metrics(perf(questoes))+`
-<div class="two section-space">
-<section class="card"><h2>Provas importadas</h2>
-${provas.length?provas.map(p=>`<div class="item row between"><div><b>${esc(proofName(p))}</b><div class="small">${questoes.filter(q=>q.provaId===p.id).length} questões</div></div><button class="btn" onclick="openProof('${enc(p.id)}')">Abrir</button></div>`).join(""):'<p class="muted">Nenhuma prova cadastrada.</p>'}
-</section>
-<section class="card"><h2>Acesso rápido</h2><p>Importe provas em ZIP, confira temas sugeridos e selecione questões semelhantes para estudar.</p><div class="row"><button class="btn primary" onclick="go('backup')">Importar nova prova</button><button class="btn" onclick="go('questoes')">Buscar questões</button></div></section>
+return heading(
+"Minha biblioteca",
+"Suas provas e questões organizadas por assunto."
+)+metrics(stats(questoes))+`
+<div class="two">
+<div class="card">
+<h2>Minhas provas</h2>
+${provas.map(p=>`
+<div class="item row between">
+<div>
+<b>${esc(proofName(p))}</b>
+<div class="small">${questoes.filter(q=>q.provaId===p.id).length} questões</div>
+</div>
+<button class="btn" onclick="openProof('${enc(p.id)}')">Abrir</button>
+</div>`).join("")||'<p class="small">Nenhuma prova importada.</p>'}
+</div>
+<div class="card">
+<h2>Importar nova prova</h2>
+<p>Envie seu PDF ao ChatGPT e importe o ZIP com as questões, respostas e gabaritos.</p>
+<button class="btn primary" onclick="go('backup')">
+Importar nova prova →
+</button>
+</div>
 </div>`;
 }
-function pageProvas(){
-return header("Provas","Abra todas as questões de uma prova na ordem original.")+`<div class="card">${provas.map(p=>{
-let s=perf(questoes.filter(q=>q.provaId===p.id));
-return `<div class="item row between"><div><h3>${esc(proofName(p))}</h3><div class="small">${s.total} questões · ${s.feitas} feitas · ${pct(s.indice)} de acertos</div></div><div class="row"><button class="btn" onclick="openProof('${enc(p.id)}')">Abrir prova</button><button class="btn danger" onclick="deleteProof('${enc(p.id)}')">Excluir</button></div></div>`;
-}).join("")||'<div class="empty">Nenhuma prova importada.</div>'}</div>`;
+
+/* PROVAS */
+
+function proofPage(){
+return heading("Provas","Acesse suas questões por prova.")+
+`<div class="card">
+${provas.map(p=>{
+const s=stats(questoes.filter(q=>q.provaId===p.id));
+return `<div class="item row between">
+<div>
+<h3>${esc(proofName(p))}</h3>
+<div class="small">${s.total} questões · ${s.made} feitas · ${pct(s.rate)} de acertos</div>
+</div>
+<div class="row">
+<button class="btn" onclick="openProof('${enc(p.id)}')">Abrir</button>
+<button class="btn danger" onclick="deleteProof('${enc(p.id)}')">Excluir</button>
+</div>
+</div>`;
+}).join("")||'<div class="empty">Nenhuma prova importada.</div>'}
+</div>`;
 }
-function openProof(e){
-filtro={prova:dec(e),area:"",tema:"",subs:[],status:"",busca:""};
+
+function openProof(id){
+filter={provas:[dec(id)],area:"",tema:"",subs:[],status:"",busca:""};
 go("questoes");
-}
-function options(arr,selected,base="Todos"){
-return `<option value="">${esc(base)}</option>`+[...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR")).map(x=>`<option value="${esc(x)}" ${selected===x?"selected":""}>${esc(x)}</option>`).join("");
 }
 
 /* FILTROS DE QUESTÕES */
 
 function filtered(){
 return questoes.filter(q=>{
-const hay=[q.enunciado,q.tema_geral,q.tema_especifico,q.descricao_detalhada,...Object.values(q.alternativas||{})].join(" ").toLocaleLowerCase("pt-BR");
-return (!filtro.prova||q.provaId===filtro.prova)&&(!filtro.area||q.grande_area===filtro.area)&&(!filtro.tema||q.tema_geral===filtro.tema)&&(!filtro.subs.length||filtro.subs.includes(q.tema_especifico))&&(!filtro.status||q.situacao===filtro.status)&&(!filtro.busca||hay.includes(filtro.busca.toLocaleLowerCase("pt-BR")));
-}).sort((a,b)=>proofName(proof(a)).localeCompare(proofName(proof(b)),"pt-BR")||Number(a.numero)-Number(b.numero));
+const content=[
+q.enunciado,q.tema_geral,q.tema_especifico,
+q.descricao_detalhada,...Object.values(q.alternativas||{})
+].join(" ").toLowerCase();
+
+return (!filter.provas.length||filter.provas.includes(q.provaId))&&
+(!filter.area||q.grande_area===filter.area)&&
+(!filter.tema||q.tema_geral===filter.tema)&&
+(!filter.subs.length||filter.subs.includes(q.tema_especifico))&&
+(!filter.status||q.situacao===filter.status)&&
+(!filter.busca||content.includes(filter.busca.toLowerCase()));
+}).sort((a,b)=>
+proofName(proof(a)).localeCompare(proofName(proof(b)),"pt-BR")||
+Number(a.numero)-Number(b.numero));
 }
-function setFilter(k,v){
-filtro[k]=v;
-if(k==="area"||k==="tema")filtro.subs=[];
-if(k==="area")filtro.tema="";
+
+function changeFilter(key,value){
+filter[key]=value;
+if(key==="area"){filter.tema="";filter.subs=[]}
+if(key==="tema")filter.subs=[];
 render();
 }
+
+function toggleProofFilter(id,on){
+const v=dec(id);
+filter.provas=on?
+[...new Set([...filter.provas,v])]:
+filter.provas.filter(x=>x!==v);
+render();
+}
+
+function toggleSub(id,on){
+const v=dec(id);
+filter.subs=on?
+[...new Set([...filter.subs,v])]:
+filter.subs.filter(x=>x!==v);
+render();
+}
+
 function clearFilters(){
-filtro={prova:"",area:"",tema:"",subs:[],status:"",busca:""};
+filter={provas:[],area:"",tema:"",subs:[],status:"",busca:""};
 render();
 }
-function toggleSub(e,checked){
-let v=dec(e);
-filtro.subs=checked?[...new Set([...filtro.subs,v])]:filtro.subs.filter(s=>s!==v);
-render();
+
+function tag(q){
+const color=q.situacao==="acertei"?"good":
+q.situacao==="errei"?"bad":"warn";
+return `<span class="tag ${color}">${statusName(q.situacao)}</span>`;
 }
-function selectQ(e,on){
-let id=dec(e);
-on?selecionadas.add(id):selecionadas.delete(id);
-render();
-}
-function selectResults(){filtered().forEach(q=>selecionadas.add(q.id));render()}
-function lineQ(q){
+
+function questionRow(q){
 return `<div class="item">
 <div class="row between">
 <div class="row">
-<input aria-label="Selecionar questão" class="check" type="checkbox" ${selecionadas.has(q.id)?"checked":""} onchange="selectQ('${enc(q.id)}',this.checked)">
+<input type="checkbox" class="check"
+${selected.has(q.id)?"checked":""}
+onchange="toggleSelected('${enc(q.id)}',this.checked)">
 <div>
 <h3>${esc(titleQ(q))}</h3>
 <span class="tag">${esc(q.grande_area||"Sem área")}</span>
 <span class="tag">${esc(q.tema_geral||"Sem tema")}</span>
-${q.tema_especifico?`<span class="tag">${esc(q.tema_especifico)}</span>`:""}
+<span class="tag">${esc(q.tema_especifico||"Sem subtema")}</span>
 ${tag(q)}
 ${q.classificacao_aprovada?"":'<span class="tag warn">Tema sugerido</span>'}
-</div></div>
-<button class="btn" onclick="openQ('${enc(q.id)}')">Abrir</button>
+</div>
+</div>
+<button class="btn" onclick="openQuestion('${enc(q.id)}')">Abrir</button>
 </div>
 <p class="preview">${esc(q.enunciado)}</p>
-${q.descricao_detalhada?`<div class="small">Detalhamento: ${esc(q.descricao_detalhada)}</div>`:""}
+${q.descricao_detalhada?`<div class="small">Descrição: ${esc(q.descricao_detalhada)}</div>`:""}
 </div>`;
 }
-function pageQuestions(){
-let list=filtered();
-let themes=questoes.filter(q=>!filtro.area||q.grande_area===filtro.area).map(x=>x.tema_geral);
-let subs=[...new Set(questoes.filter(q=>(!filtro.prova||q.provaId===filtro.prova)&&(!filtro.area||q.grande_area===filtro.area)&&(!filtro.tema||q.tema_geral===filtro.tema)).map(q=>q.tema_especifico).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
-return header("Banco de questões","Marque vários subtemas para reunir questões de assuntos semelhantes.")+`
+
+function questionPage(){
+const list=filtered();
+
+const base=questoes.filter(q=>
+!filter.provas.length||filter.provas.includes(q.provaId));
+
+const themes=base.filter(q=>
+!filter.area||q.grande_area===filter.area)
+.map(q=>q.tema_geral);
+
+const subs=[...new Set(base.filter(q=>
+(!filter.area||q.grande_area===filter.area)&&
+(!filter.tema||q.tema_geral===filter.tema))
+.map(q=>q.tema_especifico).filter(Boolean))]
+.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+return heading("Banco de questões","Combine provas, áreas e vários subtemas.")+`
 <div class="card">
+
+<div class="field">
+<label>Selecionar provas (sem marcação = todas)</label>
+<div class="choices">
+${provas.map(p=>`<label class="choice">
+<input type="checkbox"
+${filter.provas.includes(p.id)?"checked":""}
+onchange="toggleProofFilter('${enc(p.id)}',this.checked)">
+${esc(proofName(p))}
+</label>`).join("")||'<span class="small">Nenhuma prova disponível.</span>'}
+</div>
+</div>
+
 <div class="filters">
-<div><label>Prova</label><select onchange="setFilter('prova',this.value)"><option value="">Todas as provas</option>${provas.map(p=>`<option value="${esc(p.id)}" ${filtro.prova===p.id?"selected":""}>${esc(proofName(p))}</option>`).join("")}</select></div>
-<div><label>Grande área</label><select onchange="setFilter('area',this.value)">${options([...areas,...questoes.map(q=>q.grande_area)],filtro.area)}</select></div>
-<div><label>Tema geral</label><select onchange="setFilter('tema',this.value)">${options(themes,filtro.tema)}</select></div>
-<div><label>Desempenho</label><select onchange="setFilter('status',this.value)"><option value="">Todos</option>${statuses.map(v=>`<option value="${v}" ${filtro.status===v?"selected":""}>${labelStatus(v)}</option>`).join("")}</select></div>
-<div><label>Pesquisar texto ou descrição detalhada</label><input value="${esc(filtro.busca)}" placeholder="Palavra-chave" onchange="setFilter('busca',this.value)"></div>
+<div><label>Grande área</label>
+<select onchange="changeFilter('area',this.value)">
+${options([...AREAS,...questoes.map(q=>q.grande_area)],filter.area)}
+</select></div>
+
+<div><label>Tema geral</label>
+<select onchange="changeFilter('tema',this.value)">
+${options(themes,filter.tema)}
+</select></div>
+
+<div><label>Desempenho</label>
+<select onchange="changeFilter('status',this.value)">
+<option value="">Todos</option>
+${STATES.map(s=>`<option value="${s}" ${filter.status===s?"selected":""}>${statusName(s)}</option>`).join("")}
+</select></div>
+
+<div><label>Pesquisar conteúdo</label>
+<input value="${esc(filter.busca)}" placeholder="Palavra-chave"
+onchange="changeFilter('busca',this.value)">
 </div>
-<div class="field"><label>Subtemas (marque quantos quiser; sem seleção = todos)</label>
-<div class="subchoices">${subs.map(v=>`<label class="subchoice"><input type="checkbox" ${filtro.subs.includes(v)?"checked":""} onchange="toggleSub('${enc(v)}',this.checked)">${esc(v)}</label>`).join("")||'<span class="small">Nenhum subtema cadastrado</span>'}</div></div>
-<div class="row between"><span class="small">${list.length} questões encontradas · ${filtro.subs.length} subtemas selecionados</span><div class="row"><button class="btn" onclick="clearFilters()">Limpar filtros</button><button class="btn" onclick="selectResults()">Selecionar resultados</button></div></div>
 </div>
+
+<div class="field">
+<label>Subtemas — marque quantos quiser</label>
+<div class="choices">
+${subs.map(s=>`<label class="choice">
+<input type="checkbox" ${filter.subs.includes(s)?"checked":""}
+onchange="toggleSub('${enc(s)}',this.checked)">
+${esc(s)}
+</label>`).join("")||'<span class="small">Nenhum subtema.</span>'}
+</div>
+</div>
+
+<div class="row between">
+<span class="small">${list.length} questões encontradas</span>
+<div class="row">
+<button class="btn" onclick="clearFilters()">Limpar filtros</button>
+<button class="btn" onclick="selectResults()">Selecionar resultados</button>
+</div>
+</div>
+</div>
+
 <div class="card">
-<div class="row between"><b>${selecionadas.size} selecionadas</b><div class="row"><button class="btn" ${selecionadas.size?"":"disabled"} onclick="batchModal()">Classificar em lote</button><button class="btn" ${selecionadas.size?"":"disabled"} onclick="makeCollection()">Criar coleção</button><button class="btn primary" ${selecionadas.size?"":"disabled"} onclick="copySelected()">Copiar para ChatGPT</button></div></div>
-${list.map(lineQ).join("")||'<div class="empty">Nenhuma questão encontrada.</div>'}
+<div class="row between">
+<b>${selected.size} selecionadas</b>
+<div class="row">
+<button class="btn" ${selected.size?"":"disabled"} onclick="batchEditor()">Classificar em lote</button>
+<button class="btn" ${selected.size?"":"disabled"} onclick="makeCollection()">Criar coleção</button>
+<button class="btn primary" ${selected.size?"":"disabled"} onclick="copyStudy([...selected])">Copiar para ChatGPT</button>
+</div>
+</div>
+${list.map(questionRow).join("")||'<div class="empty">Nenhuma questão encontrada.</div>'}
 </div>`;
 }
 
-/* RESULTADO AUTOMÁTICO */
-
-function choice(v){
-const x=clean(v).toUpperCase();
-return /^[A-E]$/.test(x)?x:"";
-}
-function isAnnulled(v){
-return /\bANULAD[AO]\b/i.test(clean(v));
-}
-function inferredStatus(answer,key,emptyStatus="a_conferir"){
-if(isAnnulled(key))return "anulada";
-const a=choice(answer),g=choice(key);
-if(a&&g)return a===g?"acertei":"errei";
-return !a&&emptyStatus==="nao_fiz"?"nao_fiz":"a_conferir";
-}
-function updateComputedStatus(){
-const a=$("edMinha"),g=$("edGab"),m=$("edManual"),result=$("computedResult");
-if(!a||!g||!result)return;
-const status=inferredStatus(a.value,g.value);
-result.textContent="Resultado calculado: "+labelStatus(status)+(m&&m.value!=="automatico"?" (substituído manualmente)":"");
+function toggleSelected(id,on){
+const v=dec(id);
+on?selected.add(v):selected.delete(v);
+render();
 }
 
-/* EDITOR */
+function selectResults(){
+filtered().forEach(q=>selected.add(q.id));
+render();
+}
 
-function revokeImages(){imageUrls.forEach(URL.revokeObjectURL);imageUrls=[]}
-function showModal(html){
-$("modalRoot").innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`;
+/* JANELA DE QUESTÃO */
+
+function releaseImages(){
+imageURLs.forEach(URL.revokeObjectURL);
+imageURLs=[];
 }
-function closeModal(){
-revokeImages();
-$("modalRoot").innerHTML="";
-aberta=null;
-}
-function photoURL(blob){
-let url=URL.createObjectURL(blob);
-imageUrls.push(url);
+
+function imageURL(blob){
+const url=URL.createObjectURL(blob);
+imageURLs.push(url);
 return url;
 }
-function openQ(e,keepNav=false){
-let id=dec(e);
-let q=questoes.find(x=>x.id===id);
-if(!q)return;
-if(!keepNav)navIds=filtered().map(x=>x.id);
-if(!navIds.includes(id))navIds=[id];
-aberta=id;
-let pos=navIds.indexOf(id);
-revokeImages();
 
-let alts=Object.entries(q.alternativas||{}).map(([a,t])=>`<div class="alternative"><b>${esc(a)})</b> ${esc(t)}</div>`).join("");
-let photos=(q.imagens||[]).map(id=>{
-let im=imagens.find(x=>x.id===id);
-return im?`<img class="qimage" alt="Figura da questão" src="${photoURL(im.blob)}">`:"";
+function showModal(html){
+$("modalRoot").innerHTML=`
+<div class="modal-bg" onclick="if(event.target===this)closeModal()">
+<div class="modal">${html}</div>
+</div>`;
+}
+
+function closeModal(){
+releaseImages();
+$("modalRoot").innerHTML="";
+current=null;
+}
+
+function openQuestion(id,keepNavigation=false){
+const q=questoes.find(x=>x.id===dec(id));
+if(!q)return;
+
+if(!keepNavigation)navigation=filtered().map(x=>x.id);
+if(!navigation.includes(q.id))navigation=[q.id];
+
+current=q.id;
+const position=navigation.indexOf(q.id);
+releaseImages();
+
+const alternatives=Object.entries(q.alternativas||{})
+.map(([letter,value])=>`<div class="alternative">
+<b>${esc(letter)})</b> ${esc(value)}
+</div>`).join("");
+
+const pictures=(q.imagens||[]).map(id=>{
+const im=imagens.find(x=>x.id===id);
+return im?`<img class="qimage" alt="Imagem da questão" src="${imageURL(im.blob)}">`:"";
 }).join("");
 
-let areaOptions=options([...areas,...questoes.map(x=>x.grande_area)],q.grande_area,"Selecionar área");
+const themes=[...new Set(questoes.map(x=>x.tema_geral).filter(Boolean))];
+const subs=[...new Set(questoes.map(x=>x.tema_especifico).filter(Boolean))];
 
 showModal(`
 <div class="modal-head row between">
-<div><h2 style="margin:0">${esc(titleQ(q))}</h2><span class="small">Questão ${pos+1} de ${navIds.length} nesta seleção</span></div>
+<div>
+<h2 style="margin:0">${esc(titleQ(q))}</h2>
+<div class="small">Questão ${position+1} de ${navigation.length}</div>
+</div>
 <button class="btn" onclick="closeModal()">Fechar ×</button>
 </div>
+
 <div class="two">
-<div>
+<section>
 <div class="question">${esc(q.enunciado)}</div>
-${alts}
-${photos}
-<div class="notice" style="margin-top:14px">Gabarito: <b>${esc(q.gabarito||"Não informado")}</b> · Sua resposta: <b>${esc(q.minha_resposta||"Não informada")}</b></div>
+${alternatives}
+${pictures}
+<div class="notice">
+Gabarito: <b>${esc(q.gabarito||"Não informado")}</b> ·
+Sua resposta: <b>${esc(q.minha_resposta||"Não informada")}</b>
 </div>
+</section>
+
+<section>
 <div class="card">
 <h2>Classificação e desempenho</h2>
-<div class="field"><label>Grande área</label><select id="edArea">${areaOptions}</select></div>
-<div class="field"><label>Tema geral (amplo)</label><input id="edTema" list="temaList" value="${esc(q.tema_geral)}" placeholder="Ex.: Endocrinologia"><datalist id="temaList">${[...new Set(questoes.map(x=>x.tema_geral).filter(Boolean))].map(x=>`<option value="${esc(x)}">`).join("")}</datalist></div>
-<div class="field"><label>Subtema (amplo, por extenso)</label><input id="edSub" list="subList" value="${esc(q.tema_especifico)}" placeholder="Ex.: Anemias hemolíticas"><datalist id="subList">${[...new Set(questoes.map(x=>x.tema_especifico).filter(Boolean))].map(x=>`<option value="${esc(x)}">`).join("")}</datalist></div>
-<div class="field"><label>Descrição detalhada (opcional)</label><input id="edDetail" value="${esc(q.descricao_detalhada||"")}" placeholder="Ex.: Anemia falciforme"></div>
 
 <div class="field">
-<label>Resultado calculado automaticamente</label>
-<div class="notice" id="computedResult">Resultado calculado: ${labelStatus(inferredStatus(q.minha_resposta,q.gabarito,q.situacao))}</div>
+<label>Grande área</label>
+<select id="edArea">
+${options([...AREAS,...questoes.map(x=>x.grande_area)],q.grande_area,"Selecionar")}
+</select>
+</div>
+
+<div class="field">
+<label>Tema geral</label>
+<input id="edTheme" list="themeList" value="${esc(q.tema_geral)}">
+<datalist id="themeList">
+${themes.map(t=>`<option value="${esc(t)}">`).join("")}
+</datalist>
+</div>
+
+<div class="field">
+<label>Subtema amplo</label>
+<input id="edSub" list="subList" value="${esc(q.tema_especifico)}">
+<datalist id="subList">
+${subs.map(s=>`<option value="${esc(s)}">`).join("")}
+</datalist>
+</div>
+
+<div class="field">
+<label>Descrição detalhada</label>
+<input id="edDetail" value="${esc(q.descricao_detalhada||"")}">
+</div>
+
+<div class="field">
+<label>Resultado automático</label>
+<div class="notice" id="calculatedResult">
+Resultado automático:
+${statusName(calculateStatus(q.minha_resposta,q.gabarito,q.situacao))}
+</div>
 </div>
 
 <div class="field">
 <label>Correção manual (somente se necessário)</label>
-<select id="edManual" onchange="updateComputedStatus()">
+<select id="edManual" onchange="updateCalculated()">
 <option value="automatico" ${!q.situacao_manual?"selected":""}>Automático</option>
-${statuses.map(s=>`<option value="${s}" ${q.situacao_manual&&q.situacao===s?"selected":""}>${labelStatus(s)}</option>`).join("")}
+${STATES.map(s=>`<option value="${s}" ${q.situacao_manual&&q.situacao===s?"selected":""}>${statusName(s)}</option>`).join("")}
 </select>
 </div>
 
 <div class="two">
-<div class="field"><label>Minha resposta</label><input id="edMinha" value="${esc(q.minha_resposta)}" oninput="updateComputedStatus()"></div>
-<div class="field"><label>Gabarito</label><input id="edGab" value="${esc(q.gabarito)}" oninput="updateComputedStatus()"></div>
+<div class="field">
+<label>Minha resposta</label>
+<input id="edAnswer" value="${esc(q.minha_resposta)}"
+oninput="updateCalculated()" placeholder="A, B, C, D ou E">
+</div>
+<div class="field">
+<label>Gabarito</label>
+<input id="edKey" value="${esc(q.gabarito)}"
+oninput="updateCalculated()" placeholder="A, B, C, D, E ou ANULADA">
+</div>
 </div>
 
 <div class="field">
-<label>Imagens necessárias (desmarque capturas repetidas do texto)</label>
-<div class="subchoices">
+<label>Manter somente imagens necessárias</label>
+<div class="choices">
 ${(q.imagens||[]).map(id=>{
-let im=imagens.find(x=>x.id===id);
-return im?`<label class="subchoice"><input type="checkbox" class="keepImage" value="${esc(id)}" checked> Manter ${esc(im.caminho||"figura")}</label>`:"";
-}).join("")||'<span class="small">Nenhuma imagem anexada.</span>'}
+const im=imagens.find(x=>x.id===id);
+return im?`<label class="choice">
+<input class="keepImage" type="checkbox" value="${esc(id)}" checked>
+${esc(im.caminho||"Imagem")}
+</label>`:"";
+}).join("")||'<span class="small">Nenhuma imagem vinculada.</span>'}
 </div>
 </div>
 
-<div class="field"><label>Anotações (opcional)</label><textarea id="edNotas" placeholder="Campo opcional">${esc(q.comentario||"")}</textarea></div>
-<div class="notice">O tema sugerido será aprovado quando você salvar. Use subtemas abrangentes, sem abreviações.</div>
+<div class="field">
+<label>Anotações (opcional)</label>
+<textarea id="edNotes" placeholder="Em branco por padrão">${esc(q.comentario||"")}</textarea>
 </div>
+</div>
+</section>
 </div>
 
 <div class="modal-foot row between">
 <div class="row">
-<button class="btn" ${pos<=0?"disabled":""} onclick="saveQ(-1)">← Salvar e anterior</button>
-<button class="btn" onclick="saveQ(0)">Salvar</button>
+<button class="btn" ${position===0?"disabled":""} onclick="saveQuestion(-1)">
+← Salvar e anterior
+</button>
+<button class="btn" onclick="saveQuestion(0)">Salvar</button>
 </div>
+
 <div class="row">
-<button class="btn" onclick="copyQuestions([dec('${enc(q.id)}')])">Copiar prompt</button>
-<button class="btn" onclick="openChat([dec('${enc(q.id)}')])">ChatGPT</button>
-<button class="btn primary" ${pos>=navIds.length-1?"disabled":""} onclick="saveQ(1)">Salvar e próxima →</button>
+<button class="btn" onclick="copyStudy([dec('${enc(q.id)}')])">
+Copiar prompt
+</button>
+<button class="btn" onclick="chatStudy([dec('${enc(q.id)}')])">
+ChatGPT
+</button>
+<button class="btn primary"
+${position===navigation.length-1?"disabled":""}
+onclick="saveQuestion(1)">Salvar e próxima →</button>
 </div>
-</div>`);
+</div>
+`);
 }
-async function saveQ(move){
-let q=questoes.find(x=>x.id===aberta);
+
+async function saveQuestion(direction=0){
+const q=questoes.find(x=>x.id===current);
 if(!q)return;
-const id=q.id;
-const a=clean($("edMinha").value);
-const g=clean($("edGab").value);
+
+const position=navigation.indexOf(q.id);
+const answer=clean($("edAnswer").value).toUpperCase();
+const key=clean($("edKey").value).toUpperCase();
 const manual=$("edManual").value;
-const keep=[...document.querySelectorAll(".keepImage:checked")].map(el=>el.value);
-q={...q,
+
+const status=manual==="automatico"?
+calculateStatus(answer,key,q.situacao):manual;
+
+const imageIds=[...document.querySelectorAll(".keepImage:checked")]
+.map(x=>x.value);
+
+const updated={
+...q,
 grande_area:$("edArea").value,
-tema_geral:clean($("edTema").value),
+tema_geral:clean($("edTheme").value),
 tema_especifico:clean($("edSub").value),
 descricao_detalhada:clean($("edDetail").value),
-situacao:manual==="automatico"?inferredStatus(a,g,q.situacao):manual,
+minha_resposta:answer,
+gabarito:key,
+situacao:status,
 situacao_manual:manual!=="automatico",
-minha_resposta:a,
-gabarito:g,
-comentario:$("edNotas").value,
-imagens:keep,
+imagens:imageIds,
+comentario:$("edNotes").value,
 classificacao_aprovada:true
 };
-await put("questoes",q);
+
+await put("questoes",updated);
 await reload(false);
 render();
-const next=navIds[navIds.indexOf(id)+move];
-openQ(enc(move&&next?next:id),true);
+
+const next=navigation[position+direction]||q.id;
+openQuestion(enc(next),true);
 }
 
 /* CLASSIFICAÇÃO EM LOTE */
 
-function batchModal(){
+function batchEditor(){
 showModal(`
-<div class="row between"><h2>Classificar em lote</h2><button class="btn" onclick="closeModal()">Fechar</button></div>
-<p class="small">${selecionadas.size} questões. Campos vazios não serão alterados.</p>
-<div class="field"><label>Grande área</label><select id="batchArea">${options(areas,"","Não alterar")}</select></div>
-<div class="field"><label>Tema geral</label><input id="batchTheme" placeholder="Ex.: Anatomia pélvica"></div>
-<div class="field"><label>Subtema amplo</label><input id="batchSub" placeholder="Ex.: Trauma esplênico"></div>
-<div class="field"><label>Descrição detalhada</label><input id="batchDetail" placeholder="Ex.: Tratamento não operatório"></div>
-<div class="field"><label>Desempenho</label><select id="batchStatus"><option value="">Não alterar</option>${statuses.map(x=>`<option value="${x}">${labelStatus(x)}</option>`).join("")}</select></div>
-<button class="btn primary" onclick="applyBatch()">Aplicar e salvar</button>`);
+<div class="row between">
+<h2>Classificação em lote</h2>
+<button class="btn" onclick="closeModal()">Fechar</button>
+</div>
+
+<p class="small">${selected.size} questões selecionadas. Campos vazios não serão alterados.</p>
+
+<div class="field">
+<label>Grande área</label>
+<select id="bArea">${options(AREAS,"","Não alterar")}</select>
+</div>
+
+<div class="field"><label>Tema geral</label><input id="bTheme"></div>
+<div class="field"><label>Subtema amplo</label><input id="bSub"></div>
+<div class="field"><label>Descrição detalhada</label><input id="bDetail"></div>
+
+<div class="field">
+<label>Desempenho — correção manual</label>
+<select id="bStatus">
+<option value="">Não alterar</option>
+${STATES.map(s=>`<option value="${s}">${statusName(s)}</option>`).join("")}
+</select>
+</div>
+
+<button class="btn primary" onclick="applyBatch()">Salvar alterações</button>
+`);
 }
+
 async function applyBatch(){
-let a=$("batchArea").value,t=clean($("batchTheme").value),s=clean($("batchSub").value),d=clean($("batchDetail").value),st=$("batchStatus").value;
-for(let q of questoes.filter(x=>selecionadas.has(x.id))){
-if(a)q.grande_area=a;
-if(t)q.tema_geral=t;
-if(s)q.tema_especifico=s;
-if(d)q.descricao_detalhada=d;
-if(st){q.situacao=st;q.situacao_manual=true}
+const area=$("bArea").value;
+const theme=clean($("bTheme").value);
+const sub=clean($("bSub").value);
+const detail=clean($("bDetail").value);
+const status=$("bStatus").value;
+
+for(const q of questoes.filter(q=>selected.has(q.id))){
+if(area)q.grande_area=area;
+if(theme)q.tema_geral=theme;
+if(sub)q.tema_especifico=sub;
+if(detail)q.descricao_detalhada=detail;
+if(status){
+q.situacao=status;
+q.situacao_manual=true;
+}
 q.classificacao_aprovada=true;
 await put("questoes",q);
 }
-selecionadas.clear();
+
+selected.clear();
 closeModal();
 await reload();
 }
 
-/* ESTUDO NO CHATGPT */
+/* CHATGPT E COLEÇÕES */
 
 function studyPrompt(ids){
-return `Quero estudar em conjunto estas questões de residência médica. Analise todas as alternativas, identifique padrões de cobrança e desenvolva uma revisão aprofundada dos assuntos. Não antecipe um resumo para o caderno até eu concluir a discussão.
+return `Quero estudar estas questões de residência médica em conjunto.
+Analise todas as alternativas, os padrões de cobrança e as pegadinhas.
+Faça uma revisão aprofundada dos temas.
+O resumo para meu caderno deve aparecer apenas quando eu concluir a discussão.
 
-`+ids.map(id=>questoes.find(q=>q.id===id)).filter(Boolean).map(q=>`
-${titleQ(q)}
+`+ids.map(id=>questoes.find(q=>q.id===id)).filter(Boolean)
+.map(q=>`${titleQ(q)}
 ÁREA: ${q.grande_area}
 TEMA: ${q.tema_geral}
 SUBTEMA: ${q.tema_especifico}
-DESCRIÇÃO DETALHADA: ${q.descricao_detalhada||""}
-ENUNCIADO:
+DESCRIÇÃO: ${q.descricao_detalhada||""}
+
 ${q.enunciado}
-${Object.entries(q.alternativas||{}).map(([a,t])=>a+") "+t).join("\n")}
+
+${Object.entries(q.alternativas||{})
+.map(([letter,value])=>letter+") "+value).join("\n")}
+
 GABARITO: ${q.gabarito||"Não informado"}
 MINHA RESPOSTA: ${q.minha_resposta||"Não informada"}
-DESEMPENHO: ${labelStatus(q.situacao)}
-${q.imagens?.length?"ATENÇÃO: questão com figura. Enviarei a imagem separadamente.":""}
-`).join("\n--------------------\n");
-}
-async function copyText(t){
-try{
-await navigator.clipboard.writeText(t);
-avisar("Texto copiado. Cole na conversa desejada.");
-}catch{
-showModal(`<h2>Copiar texto</h2><textarea id="copyArea" style="height:320px">${esc(t)}</textarea><p class="small">Selecione o texto e copie manualmente.</p><button class="btn" onclick="closeModal()">Fechar</button>`);
-}
-}
-function copyQuestions(ids){copyText(studyPrompt(ids))}
-function copySelected(){copyQuestions([...selecionadas])}
-function openChat(ids){
-window.open("https://chatgpt.com/","_blank","noopener");
-copyQuestions(ids);
+RESULTADO: ${statusName(q.situacao)}
+${q.imagens?.length?"Esta questão contém imagem que precisa ser anexada separadamente.":""}
+`).join("\n----------------------\n");
 }
 
-/* COLEÇÕES */
+async function copyText(text){
+try{
+await navigator.clipboard.writeText(text);
+alert("Texto copiado. Cole na conversa desejada.");
+}catch{
+showModal(`
+<h2>Copiar texto</h2>
+<textarea style="height:350px">${esc(text)}</textarea>
+<p>Selecione e copie manualmente.</p>
+<button class="btn" onclick="closeModal()">Fechar</button>
+`);
+}
+}
+
+function copyStudy(ids){
+copyText(studyPrompt(ids));
+}
+
+function chatStudy(ids){
+window.open("https://chatgpt.com/","_blank","noopener");
+copyStudy(ids);
+}
 
 async function makeCollection(){
-let nome=prompt("Nome da coleção:");
-if(!clean(nome))return;
-await put("colecoes",{id:"col-"+uid(),nome:clean(nome),ids:[...selecionadas],created:new Date().toISOString()});
-selecionadas.clear();
+const name=prompt("Como deseja nomear esta coleção?");
+if(!clean(name))return;
+
+await put("colecoes",{
+id:"colecao-"+uid(),
+nome:clean(name),
+ids:[...selected],
+created:new Date().toISOString()
+});
+
+selected.clear();
 await reload();
-avisar("Coleção criada.");
+alert("Coleção criada.");
 }
-function pageCollections(){
-return header("Coleções de estudo","Agrupe questões semelhantes independentemente da prova.")+`<div class="card">${colecoes.map(c=>`<div class="item row between"><div><h3>${esc(c.nome)}</h3><span class="small">${c.ids.length} questões</span></div><div class="row"><button class="btn" onclick="openCollection('${enc(c.id)}')">Abrir</button><button class="btn danger" onclick="deleteCollection('${enc(c.id)}')">Excluir</button></div></div>`).join("")||'<div class="empty">Nenhuma coleção criada.</div>'}</div>`;
+
+function collectionPage(){
+return heading("Coleções","Questões reunidas para estudar assuntos específicos.")+
+`<div class="card">
+${colecoes.map(c=>`
+<div class="item row between">
+<div>
+<h3>${esc(c.nome)}</h3>
+<div class="small">${c.ids.length} questões</div>
+</div>
+<div class="row">
+<button class="btn" onclick="openCollection('${enc(c.id)}')">Abrir</button>
+<button class="btn danger" onclick="deleteCollection('${enc(c.id)}')">Excluir</button>
+</div>
+</div>
+`).join("")||'<div class="empty">Nenhuma coleção criada.</div>'}
+</div>`;
 }
-function openCollection(e){
-let c=colecoes.find(x=>x.id===dec(e));
+
+function openCollection(id){
+const c=colecoes.find(x=>x.id===dec(id));
 if(!c)return;
-let list=c.ids.map(id=>questoes.find(q=>q.id===id)).filter(Boolean);
-showModal(`<div class="row between"><h2>${esc(c.nome)}</h2><button class="btn" onclick="closeModal()">Fechar</button></div><div class="row"><button class="btn primary" onclick="copyCollection('${enc(c.id)}')">Copiar questões</button><button class="btn" onclick="chatCollection('${enc(c.id)}')">ChatGPT</button></div>${list.map(q=>`<div class="item row between"><div><b>${esc(titleQ(q))}</b><div class="small">${esc(q.tema_geral)}</div></div><button class="btn" onclick="openQ('${enc(q.id)}')">Abrir</button></div>`).join("")}`);
+
+const list=c.ids.map(id=>questoes.find(q=>q.id===id))
+.filter(Boolean);
+
+showModal(`
+<div class="row between">
+<h2>${esc(c.nome)}</h2>
+<button class="btn" onclick="closeModal()">Fechar</button>
+</div>
+
+<div class="row">
+<button class="btn primary" onclick="copyCollection('${enc(c.id)}')">
+Copiar para ChatGPT
+</button>
+</div>
+
+${list.map(q=>`<div class="item row between">
+<div>
+<b>${esc(titleQ(q))}</b>
+<div class="small">${esc(q.tema_geral)} · ${esc(q.tema_especifico)}</div>
+</div>
+<button class="btn" onclick="openQuestion('${enc(q.id)}')">Abrir</button>
+</div>`).join("")}
+`);
 }
-function copyCollection(e){
-let c=colecoes.find(x=>x.id===dec(e));
-if(c)copyQuestions(c.ids);
+
+function copyCollection(id){
+const c=colecoes.find(x=>x.id===dec(id));
+if(c)copyStudy(c.ids);
 }
-function chatCollection(e){
-let c=colecoes.find(x=>x.id===dec(e));
-if(c)openChat(c.ids);
-}
-async function deleteCollection(e){
+
+async function deleteCollection(id){
 if(!confirm("Excluir esta coleção? As questões serão preservadas."))return;
-await del("colecoes",dec(e));
+await remove("colecoes",dec(id));
 await reload();
 }
 
 /* DESEMPENHO MACRO E MICRO */
 
-function groups(list,field){
-let m=new Map();
-for(let q of list){
-let k=q[field]||"Sem classificação";
-if(!m.has(k))m.set(k,[]);
-m.get(k).push(q);
-}
-return [...m].map(([nome,l])=>({nome,...perf(l)})).sort((a,b)=>b.feitas-a.feitas||a.nome.localeCompare(b.nome));
-}
 function reportList(){
 return questoes.filter(q=>
-(!relatorio.provas.length||relatorio.provas.includes(q.provaId))&&
-(!relatorio.area||q.grande_area===relatorio.area)&&
-(!relatorio.tema||q.tema_geral===relatorio.tema)&&
-(!relatorio.subs.length||relatorio.subs.includes(q.tema_especifico))&&
-(!relatorio.detail||q.descricao_detalhada===relatorio.detail)
+(!report.provas.length||report.provas.includes(q.provaId))&&
+(!report.area||q.grande_area===report.area)&&
+(!report.tema||q.tema_geral===report.tema)&&
+(!report.subs.length||report.subs.includes(q.tema_especifico))&&
+(!report.detail||q.descricao_detalhada===report.detail)
 );
 }
-function reportChange(k,v){
-relatorio[k]=v;
-if(k==="area"){relatorio.tema="";relatorio.subs=[];relatorio.detail=""}
-if(k==="tema"){relatorio.subs=[];relatorio.detail=""}
+
+function changeReport(key,value){
+report[key]=value;
+if(key==="area"){report.tema="";report.subs=[];report.detail=""}
+if(key==="tema"){report.subs=[];report.detail=""}
 render();
 }
-function reportToggle(k,value,on){
-value=dec(value);
-relatorio[k]=on?[...new Set([...relatorio[k],value])]:relatorio[k].filter(x=>x!==value);
-if(k==="subs")relatorio.detail="";
+
+function toggleReportProof(id,on){
+const v=dec(id);
+report.provas=on?[...new Set([...report.provas,v])]:
+report.provas.filter(x=>x!==v);
 render();
 }
-function reportReset(){
-relatorio={provas:[],area:"",tema:"",subs:[],detail:"",visao:"macro"};
+
+function toggleReportSub(id,on){
+const v=dec(id);
+report.subs=on?[...new Set([...report.subs,v])]:
+report.subs.filter(x=>x!==v);
+report.detail="";
 render();
 }
-function reportDetail(field,value,errors=false){
-value=dec(value);
-let list=reportList().filter(q=>(!field||(q[field]||"Sem classificação")===value)&&(!errors||q.situacao==="errei"));
-reportModal(list,errors?"Erros — "+value:value);
+
+function resetReport(){
+report={provas:[],area:"",tema:"",subs:[],detail:"",view:"macro"};
+render();
 }
-function reportModal(list,title){
-const s=perf(list);
-window.__reportIds=list.map(q=>q.id);
-showModal(`<div class="row between"><h2>${esc(title)}</h2><button class="btn" onclick="closeModal()">Fechar</button></div><div class="notice">${list.length} questões · ${s.feitas} feitas · ${s.acertos} acertos · ${s.erros} erros · ${pct(s.indice)}</div><div class="row section-space"><button class="btn primary" onclick="reportOnlyErrors()">Ver somente erros</button><button class="btn" onclick="copyQuestions(window.__reportIds)">Copiar para ChatGPT</button></div>${list.map(q=>`<div class="item row between"><div><b>${esc(titleQ(q))}</b><div class="small">${esc(q.tema_geral)} · ${esc(q.tema_especifico)} · ${labelStatus(q.situacao)}</div></div><button class="btn" onclick="openQ('${enc(q.id)}')">Abrir</button></div>`).join("")}`);
+
+function grouped(list,field){
+const groups=new Map();
+for(const q of list){
+const key=q[field]||"Sem classificação";
+if(!groups.has(key))groups.set(key,[]);
+groups.get(key).push(q);
 }
-function reportOnlyErrors(){
-let list=(window.__reportIds||[]).map(id=>questoes.find(q=>q.id===id)).filter(q=>q&&q.situacao==="errei");
-reportModal(list,"Questões erradas");
+return [...groups].map(([name,items])=>({
+name,...stats(items)
+})).sort((a,b)=>b.made-a.made);
 }
-function reportChart(list,field,title){
-return `<div class="card"><h2>${title}</h2><p class="small">Toque no tema para abrir suas questões.</p>${groups(list,field).map(g=>`<div class="chartrow"><button class="text-btn" style="text-align:left" onclick="reportDetail('${field}','${enc(g.nome)}')"><b>${esc(g.nome)}</b><div class="small">${g.feitas} feitas · ${g.erros} erros</div></button><div class="bar"><div class="fill" style="width:${g.indice||0}%"></div></div><b>${pct(g.indice)}</b></div>`).join("")||'<p class="small">Sem dados.</p>'}</div>`;
+
+function reportChart(title,field,list){
+return `<div class="card">
+<h2>${title}</h2>
+<p class="small">Toque no assunto para abrir as questões.</p>
+${grouped(list,field).map(g=>`
+<div class="chartrow">
+<div>
+<button class="btn" style="padding:4px;text-align:left;border:0"
+onclick="openReportGroup('${field}','${enc(g.name)}')">
+<b>${esc(g.name)}</b>
+<div class="small">${g.made} feitas · ${g.wrong} erros</div>
+</button>
+</div>
+<div class="bar"><div class="fill" style="width:${g.rate||0}%"></div></div>
+<b>${pct(g.rate)}</b>
+</div>
+`).join("")||'<p class="small">Nenhum dado.</p>'}
+</div>`;
 }
-function pagePerformance(){
-let list=reportList(),s=perf(list);
-let base=questoes.filter(q=>!relatorio.provas.length||relatorio.provas.includes(q.provaId));
-let themes=base.filter(q=>!relatorio.area||q.grande_area===relatorio.area).map(q=>q.tema_geral);
-let subs=[...new Set(base.filter(q=>(!relatorio.area||q.grande_area===relatorio.area)&&(!relatorio.tema||q.tema_geral===relatorio.tema)).map(q=>q.tema_especifico).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
-let details=[...new Set(base.filter(q=>(!relatorio.area||q.grande_area===relatorio.area)&&(!relatorio.tema||q.tema_geral===relatorio.tema)&&(!relatorio.subs.length||relatorio.subs.includes(q.tema_especifico))).map(q=>q.descricao_detalhada).filter(Boolean))];
-return header("Desempenho","Compare o desempenho por prova, área, tema e subtema — do macro ao micro.")+`
+
+let reportModalIds=[];
+
+function openReportGroup(field,id){
+const value=dec(id);
+showReportQuestions(
+reportList().filter(q=>(q[field]||"Sem classificação")===value),
+value
+);
+}
+
+function showReportQuestions(list,title){
+reportModalIds=list.map(q=>q.id);
+const s=stats(list);
+
+showModal(`
+<div class="row between">
+<h2>${esc(title)}</h2>
+<button class="btn" onclick="closeModal()">Fechar</button>
+</div>
+
+<div class="notice">
+${list.length} questões · ${s.made} feitas ·
+${s.right} acertos · ${s.wrong} erros · ${pct(s.rate)}
+</div>
+
+<div class="row" style="margin:15px 0">
+<button class="btn primary" onclick="showReportErrors()">Ver somente erros</button>
+<button class="btn" onclick="copyStudy(reportModalIds)">Copiar para ChatGPT</button>
+</div>
+
+${list.map(q=>`<div class="item row between">
+<div>
+<b>${esc(titleQ(q))}</b>
+<div class="small">${esc(q.tema_especifico)} · ${statusName(q.situacao)}</div>
+</div>
+<button class="btn" onclick="openQuestion('${enc(q.id)}')">Abrir</button>
+</div>`).join("")}
+`);
+}
+
+function showReportErrors(){
+showReportQuestions(
+reportModalIds.map(id=>questoes.find(q=>q.id===id))
+.filter(q=>q&&q.situacao==="errei"),
+"Questões erradas"
+);
+}
+
+function performancePage(){
+const list=reportList();
+const s=stats(list);
+
+const base=questoes.filter(q=>
+!report.provas.length||report.provas.includes(q.provaId));
+
+const themes=base.filter(q=>
+!report.area||q.grande_area===report.area)
+.map(q=>q.tema_geral);
+
+const subs=[...new Set(base.filter(q=>
+(!report.area||q.grande_area===report.area)&&
+(!report.tema||q.tema_geral===report.tema))
+.map(q=>q.tema_especifico).filter(Boolean))]
+.sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+const details=[...new Set(base.filter(q=>
+(!report.area||q.grande_area===report.area)&&
+(!report.tema||q.tema_geral===report.tema)&&
+(!report.subs.length||report.subs.includes(q.tema_especifico)))
+.map(q=>q.descricao_detalhada).filter(Boolean))];
+
+return heading("Desempenho","Analise suas provas do geral ao específico.")+`
 <div class="card">
-<div class="row between"><h2>Filtros de desempenho</h2><button class="btn" onclick="reportReset()">Limpar filtros</button></div>
-<div class="field"><label>Provas (sem marcação = todas)</label><div class="subchoices">${provas.map(p=>`<label class="subchoice"><input type="checkbox" ${relatorio.provas.includes(p.id)?"checked":""} onchange="reportToggle('provas','${enc(p.id)}',this.checked)">${esc(proofName(p))}</label>`).join("")}</div></div>
+<div class="row between">
+<h2>Filtros de desempenho</h2>
+<button class="btn" onclick="resetReport()">Limpar filtros</button>
+</div>
+
+<div class="field">
+<label>Provas — sem marcação = todas</label>
+<div class="choices">
+${provas.map(p=>`<label class="choice">
+<input type="checkbox"
+${report.provas.includes(p.id)?"checked":""}
+onchange="toggleReportProof('${enc(p.id)}',this.checked)">
+${esc(proofName(p))}
+</label>`).join("")}
+</div>
+</div>
+
 <div class="filters">
-<div><label>Grande área</label><select onchange="reportChange('area',this.value)">${options([...areas,...questoes.map(q=>q.grande_area)],relatorio.area)}</select></div>
-<div><label>Tema geral</label><select onchange="reportChange('tema',this.value)">${options(themes,relatorio.tema)}</select></div>
-<div><label>Descrição detalhada</label><select onchange="reportChange('detail',this.value)">${options(details,relatorio.detail)}</select></div>
+<div><label>Grande área</label>
+<select onchange="changeReport('area',this.value)">
+${options([...AREAS,...questoes.map(q=>q.grande_area)],report.area)}
+</select></div>
+
+<div><label>Tema geral</label>
+<select onchange="changeReport('tema',this.value)">
+${options(themes,report.tema)}
+</select></div>
+
+<div><label>Descrição detalhada</label>
+<select onchange="changeReport('detail',this.value)">
+${options(details,report.detail)}
+</select></div>
 </div>
-<div class="field"><label>Subtemas (pode marcar vários)</label><div class="subchoices">${subs.map(x=>`<label class="subchoice"><input type="checkbox" ${relatorio.subs.includes(x)?"checked":""} onchange="reportToggle('subs','${enc(x)}',this.checked)">${esc(x)}</label>`).join("")}</div></div>
-<div class="row between"><span class="small">Os gráficos consideram somente os filtros selecionados.</span><div class="row"><button class="btn ${relatorio.visao==="macro"?"primary":""}" onclick="relatorio.visao='macro';render()">Macro</button><button class="btn ${relatorio.visao==="micro"?"primary":""}" onclick="relatorio.visao='micro';render()">Micro</button></div></div>
+
+<div class="field">
+<label>Subtemas — marque quantos quiser</label>
+<div class="choices">
+${subs.map(sub=>`<label class="choice">
+<input type="checkbox"
+${report.subs.includes(sub)?"checked":""}
+onchange="toggleReportSub('${enc(sub)}',this.checked)">
+${esc(sub)}
+</label>`).join("")}
 </div>
+</div>
+
+<div class="row between">
+<span class="small">Resultados referentes aos filtros selecionados.</span>
+<div class="row">
+<button class="btn ${report.view==="macro"?"primary":""}"
+onclick="report.view='macro';render()">Macro</button>
+<button class="btn ${report.view==="micro"?"primary":""}"
+onclick="report.view='micro';render()">Micro</button>
+</div>
+</div>
+</div>
+
 ${metrics(s)}
-<div class="notice section-space">Índice = acertos ÷ (acertos + erros). Não feitas, anuladas e a conferir ficam fora do índice.</div>
-<div class="card section-space row between"><b>Questões do relatório</b><div class="row"><button class="btn" onclick="reportModal(reportList(),'Todas as questões')">Ver todas (${list.length})</button><button class="btn primary" onclick="reportModal(reportList().filter(q=>q.situacao==='errei'),'Questões erradas')">Ver erros (${s.erros})</button><button class="btn" onclick="exportCSV()">Exportar CSV</button></div></div>
-<div class="two">${relatorio.visao==="macro"?reportChart(list,"grande_area","Grande área")+reportChart(list,"tema_geral","Tema geral"):reportChart(list,"tema_especifico","Subtema")+reportChart(list,"descricao_detalhada","Descrição detalhada")}</div>`;
+
+<div class="notice" style="margin-bottom:15px">
+Índice = acertos ÷ (acertos + erros) × 100.
+Questões anuladas, não feitas e a conferir ficam fora do cálculo.
+</div>
+
+<div class="card">
+<div class="row between">
+<h2>Questões do relatório</h2>
+<div class="row">
+<button class="btn" onclick="showReportQuestions(reportList(),'Todas as questões')">
+Ver todas (${list.length})
+</button>
+<button class="btn primary" onclick="showReportQuestions(reportList().filter(q=>q.situacao==='errei'),'Erros')">
+Ver erros (${s.wrong})
+</button>
+<button class="btn" onclick="exportCSV()">Exportar CSV</button>
+</div>
+</div>
+</div>
+
+<div class="two">
+${report.view==="macro"?
+reportChart("Grande área","grande_area",list)+
+reportChart("Tema geral","tema_geral",list):
+reportChart("Subtema","tema_especifico",list)+
+reportChart("Descrição detalhada","descricao_detalhada",list)}
+</div>`;
 }
+
 function download(blob,name){
-let url=URL.createObjectURL(blob),a=document.createElement("a");
-a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;
+a.download=name;
+document.body.appendChild(a);
+a.click();
+a.remove();
 setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
+
 function exportCSV(){
-let list=reportList();
-let rows=[["Nível","Assunto","Total","Feitas","Acertos","Erros","Não fiz","Anuladas","A conferir","Índice"]];
-for(let [field,label] of [["grande_area","Grande área"],["tema_geral","Tema geral"],["tema_especifico","Subtema"],["descricao_detalhada","Descrição detalhada"]])
-for(let g of groups(list,field))
-rows.push([label,g.nome,g.total,g.feitas,g.acertos,g.erros,g.nao,g.anuladas,g.pendentes,pct(g.indice)]);
-let csv="\ufeff"+rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(";")).join("\n");
-download(new Blob([csv],{type:"text/csv;charset=utf-8"}),"MEUBANCO-RELATORIO.csv");
+const list=reportList();
+const rows=[["Nível","Assunto","Total","Feitas","Acertos","Erros","Índice"]];
+
+for(const [field,label] of [
+["grande_area","Grande área"],
+["tema_geral","Tema geral"],
+["tema_especifico","Subtema"],
+["descricao_detalhada","Descrição detalhada"]
+]){
+for(const g of grouped(list,field)){
+rows.push([label,g.name,g.total,g.made,g.right,g.wrong,pct(g.rate)]);
+}
 }
 
-/* INSTRUÇÕES PARA NOVAS PROVAS */
+const csv="\ufeff"+rows.map(row=>
+row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")
+).join("\n");
 
-function instructions(){
-return `Quero importar uma prova de residência médica para o MEUBANCO.
+download(
+new Blob([csv],{type:"text/csv;charset=utf-8"}),
+"MEUBANCO-RELATORIO.csv"
+);
+}
 
-COMECE SUA RESPOSTA EXATAMENTE ASSIM:
+/* PROMPT PREPARADOR */
+
+function zipPrompt(){
+return `Quero importar uma prova de residência médica em PDF para o aplicativo MEUBANCO.
+
+INICIE SUA RESPOSTA ASSIM:
+
 "Envie aqui o PDF da prova que você deseja adicionar ao MEUBANCO.
-Se você já resolveu a prova, envie preferencialmente o PDF com as respostas marcadas.
-Se o gabarito oficial estiver em outro arquivo, envie-o também.
-Depois de receber o PDF, identificarei a prova e perguntarei como deseja nomeá-la antes de preparar o ZIP."
 
-AGUARDE O PDF.
+Se você já resolveu a prova, envie preferencialmente o PDF com suas respostas marcadas. Se o gabarito oficial estiver em outro arquivo, envie-o também.
 
-DEPOIS DO ENVIO:
-1. Identifique instituição e ano. Pergunte: "Identifiquei a prova [NOME] de [ANO]. Posso nomeá-la como [NOME ANO] ou prefere outro nome?".
-2. Aguarde a escolha. Use exatamente o nome escolhido em prova.nome; não duplique o ano.
-3. Transcreva integralmente todas as questões e alternativas para manifest.json na raiz do ZIP, com versao: 3.
-4. Identifique a alternativa que eu marquei no PDF, quando legível. Salve em minha_resposta; confira questão por questão.
-5. Identifique o gabarito oficial, inclusive questões ANULADAS. Salve o valor em gabarito (ANULADA para anulação).
-6. A situação deve ser preenchida AUTOMATICAMENTE: minha_resposta igual ao gabarito = acertei; diferente = errei; gabarito ANULADA = anulada; resposta ausente comprovada = nao_fiz; marcações incertas ou sem gabarito = a_conferir. Nunca invente uma marcação.
-7. Inclua SOMENTE imagens indispensáveis para responder a questão: radiografias, eletrocardiogramas, tomografias, fotografias clínicas, esquemas, figuras, tabelas e gráficos. NÃO exporte recortes ou fotografias do enunciado/alternativas que já foram transcritos. Salve as imagens essenciais na pasta imagens/.
-8. Classifique: grande_area > tema_geral > tema_especifico (subtema amplo) > descricao_detalhada. Não crie microtemas. Ex.: Cirurgia Geral > Trauma > Trauma esplênico > Tratamento não operatório; Clínica Médica > Hematologia > Anemias hemolíticas > Esferocitose hereditária.
-9. classificacao_aprovada deve ser false, comentario vazio, IDs estáveis e únicos.
-10. Garanta que o ZIP tenha a estrutura:
+Depois que receber o PDF, identificarei a instituição e o ano e confirmarei o nome antes de preparar o ZIP."
+
+AGUARDE O ENVIO DO PDF.
+
+APÓS RECEBER O PDF:
+
+1. Identifique a instituição e o ano.
+2. Pergunte: "Identifiquei a prova [NOME] de [ANO]. Posso nomeá-la como [NOME ANO] ou prefere outro nome?"
+3. Aguarde a escolha.
+4. Use exatamente o nome escolhido em prova.nome.
+5. Não repita o ano automaticamente.
+
+LEITURA DAS RESPOSTAS:
+
+Analise as marcações visuais no PDF, inclusive alternativas circuladas, sublinhadas ou destacadas.
+
+Extraia a letra que o usuário marcou em cada questão. Não confunda marcação pessoal com destaque feito no enunciado.
+
+Compare a resposta pessoal com o gabarito oficial.
+
+Registre minha_resposta e gabarito separadamente.
+
+Se ambas forem identificadas e iguais, situacao=acertei.
+Se forem diferentes, situacao=errei.
+Se o gabarito oficial disser ANULADA, situacao=anulada.
+Se houver evidência de resposta não marcada, situacao=nao_fiz.
+Se a leitura for incerta, situacao=a_conferir.
+
+NUNCA marque todas as questões como a_conferir quando as respostas pessoais estão identificáveis.
+
+ANTES DE ENTREGAR:
+Confira quantas respostas pessoais, gabaritos e anulações foram extraídos.
+Se houver respostas ausentes ou duvidosas, informe os números das questões.
+
+IMAGENS:
+Transcreva integralmente os enunciados e alternativas como texto.
+Inclua SOMENTE imagens clinicamente necessárias, como radiografias, eletrocardiogramas, tabelas, gráficos, esquemas e fotografias clínicas.
+Não inclua capturas de páginas repetindo enunciados e alternativas já transcritos.
+
+CLASSIFICAÇÃO:
+Use quatro níveis:
+grande_area > tema_geral > tema_especifico > descricao_detalhada.
+
+O tema e subtema devem ser amplos e reutilizáveis entre provas.
+
+Exemplos:
+Clínica Médica > Hematologia > Anemias hemolíticas > Esferocitose hereditária.
+Cirurgia Geral > Trauma > Trauma esplênico > Tratamento não operatório.
+Cirurgia Geral > Cuidados perioperatórios > Avaliação pré-operatória > Risco cardiovascular.
+
+Não crie subtemas excessivamente específicos.
+Use nomes por extenso, sem abreviações.
+Deixe classificacao_aprovada como false.
+Deixe comentario vazio.
+
+ESTRUTURA DO ZIP:
+Crie manifest.json na raiz, com versao 3, e pasta imagens/.
+
+Exemplo:
+
 {
  "versao":3,
- "prova":{"id":"exemplo-2026","nome":"Nome escolhido","ano":2026},
+ "prova":{
+  "id":"psu-mg-2026",
+  "nome":"Nome escolhido pelo usuário",
+  "ano":2026
+ },
  "questoes":[{
-  "id":"exemplo-2026-q1","numero":1,"enunciado":"Texto integral",
-  "alternativas":{"A":"Texto A","B":"Texto B","C":"Texto C","D":"Texto D"},
-  "grande_area":"Clínica Médica","tema_geral":"Hematologia",
-  "tema_especifico":"Anemias hemolíticas","descricao_detalhada":"Esferocitose hereditária",
-  "classificacao_aprovada":false,"minha_resposta":"D","gabarito":"B",
-  "situacao":"errei","comentario":"","imagens":[]
+  "id":"psu-mg-2026-q1",
+  "numero":1,
+  "enunciado":"Texto integral",
+  "alternativas":{
+   "A":"Texto A",
+   "B":"Texto B",
+   "C":"Texto C",
+   "D":"Texto D"
+  },
+  "grande_area":"Clínica Médica",
+  "tema_geral":"Endocrinologia",
+  "tema_especifico":"Diabetes mellitus",
+  "descricao_detalhada":"Confirmação diagnóstica",
+  "classificacao_aprovada":false,
+  "minha_resposta":"D",
+  "gabarito":"B",
+  "situacao":"errei",
+  "comentario":"",
+  "imagens":[]
  }]
 }
-11. Confira a contagem das questões, a associação dos gabaritos e a necessidade de cada imagem antes de entregar o ZIP.
-12. Entregue o ZIP pronto para importar no MEUBANCO.`;
+
+As imagens devem ser referenciadas pelos caminhos relativos dentro do ZIP, por exemplo imagens/ecg_12.png.
+
+Use IDs estáveis e únicos.
+
+Confira se o ZIP contém todas as questões e alternativas, os gabaritos corretos e somente as imagens necessárias.
+
+Entregue o ZIP pronto para importar no MEUBANCO.`;
 }
-function seeInstructions(){
-showModal(`<div class="row between"><h2>Instruções para criar ZIP</h2><button class="btn" onclick="closeModal()">Fechar</button></div><textarea id="promptNew" style="height:380px">${esc(instructions())}</textarea><div class="row"><button class="btn primary" onclick="copyText(instructions())">Copiar instruções</button><button class="btn" onclick="window.open('https://chatgpt.com/','_blank')">Abrir ChatGPT</button></div>`);
-}
-function startNewProof(){
+
+/* PÁGINA DE IMPORTAÇÃO */
+
+function startProof(){
+const text=zipPrompt();
+
+navigator.clipboard.writeText(text).then(()=>{
+alert("Instruções copiadas. Cole no ChatGPT e anexe sua prova em PDF.");
+}).catch(()=>{
+showPrompt();
+});
+
 window.open("https://chatgpt.com/","_blank","noopener");
-navigator.clipboard.writeText(instructions()).then(()=>{
-avisar("Instruções copiadas! No ChatGPT, cole o texto e anexe o PDF. Depois importe aqui o ZIP recebido.");
-}).catch(()=>seeInstructions());
 }
-function pageBackup(){
-return header("Importar nova prova / Backup","O ChatGPT prepara o ZIP; o MEUBANCO organiza as questões.")+`
-<div class="card" style="border-color:#bfd7e4;background:#f8fbfd">
-<div class="small" style="font-weight:800;color:#285f79">PASSO 1 — TENHO UMA PROVA EM PDF</div>
-<h2 style="font-size:21px;margin-top:8px">Preparar minha prova com ChatGPT</h2>
-<p>Envie o PDF da prova que você fez. O ChatGPT identificará suas respostas e o gabarito, perguntará como deseja nomear a prova e preparará o ZIP.</p>
-<div class="row">
-<button class="btn primary" onclick="startNewProof()">Abrir ChatGPT e preparar minha prova →</button>
-<button class="btn" onclick="copyText(instructions())">Copiar instruções</button>
-<button class="btn" onclick="seeInstructions()">Ver instruções</button>
+
+function showPrompt(){
+showModal(`
+<div class="row between">
+<h2>Instruções para preparar prova</h2>
+<button class="btn" onclick="closeModal()">Fechar</button>
 </div>
-<p class="small">O botão abre o ChatGPT e copia as instruções. Cole-as na conversa e anexe o PDF.</p>
+<textarea style="height:370px">${esc(zipPrompt())}</textarea>
+<div class="row">
+<button class="btn primary" onclick="copyText(zipPrompt())">Copiar instruções</button>
+<button class="btn" onclick="window.open('https://chatgpt.com/','_blank')">Abrir ChatGPT</button>
+</div>
+`);
+}
+
+function backupPage(){
+return heading(
+"Importar nova prova / Backup",
+"Transforme sua prova em PDF em questões organizadas."
+)+`
+<div class="card hero">
+<div class="step">
+<div class="stepnumber">PASSO 1 — TENHO UMA PROVA EM PDF</div>
+<h2 style="margin-top:8px">Importar nova prova com ChatGPT</h2>
+<p>Envie a prova em PDF. O ChatGPT identificará suas respostas, o gabarito e os assuntos, confirmará o nome da prova e preparará o ZIP.</p>
+<div class="row">
+<button class="btn primary" onclick="startProof()">
+Abrir ChatGPT e preparar minha prova →
+</button>
+<button class="btn" onclick="copyText(zipPrompt())">
+Copiar instruções
+</button>
+<button class="btn" onclick="showPrompt()">
+Ver instruções
+</button>
+</div>
+<p class="small">O ChatGPT abre em outra página. Cole as instruções copiadas e anexe o PDF. O aplicativo instalado pode não abrir automaticamente.</p>
+</div>
+</div>
+
+<div class="card">
+<div class="step">
+<div class="stepnumber">PASSO 2 — RECEBI O ZIP</div>
+<h2 style="margin-top:8px">Importar prova preparada</h2>
+<p>Selecione o ZIP. Antes de salvar, o MEUBANCO mostrará quantas respostas pessoais e gabaritos o arquivo contém.</p>
+<button class="btn primary" onclick="$('fileInput').click()">
+Selecionar ZIP da prova
+</button>
+</div>
+</div>
+
+<div class="two">
+<div class="card">
+<h2>Compartilhar com colegas</h2>
+<p>Exporta questões, imagens e gabaritos sem respostas ou estatísticas pessoais.</p>
+<button class="btn" onclick="exportShare()">Exportar sem estatísticas</button>
 </div>
 <div class="card">
-<div class="small" style="font-weight:800;color:#285f79">PASSO 2 — RECEBI O ZIP</div>
-<h2 style="margin-top:8px">Importar minha prova para o MEUBANCO</h2>
-<p>Selecione o ZIP recebido. As questões serão importadas com respostas, gabaritos, resultados e temas sugeridos quando essas informações estiverem disponíveis.</p>
-<button class="btn primary" onclick="$('importFile').click()">Selecionar ZIP da prova</button>
+<h2>Backup pessoal completo</h2>
+<p>Preserva provas, respostas, classificações, imagens e coleções.</p>
+<button class="btn primary" onclick="exportBackup()">Exportar backup ZIP</button>
 </div>
-<div class="two">
-<div class="card"><h2>Compartilhar com colegas</h2><p>Exporte questões e gabaritos sem respostas ou estatísticas pessoais.</p><button class="btn" onclick="exportShare()">Exportar sem estatísticas</button></div>
-<div class="card"><h2>Backup pessoal completo</h2><p>Salve questões, classificações, imagens, respostas e coleções.</p><button class="btn primary" onclick="exportBackup()">Exportar backup ZIP</button></div>
 </div>
-<div class="notice">Seus dados ficam armazenados neste navegador. Para usá-los em outro aparelho, importe o backup pessoal.</div>
-<div class="card"><h2>Gerenciamento avançado</h2><button class="btn danger" onclick="deleteAll()">Apagar banco deste aparelho</button></div>`;
+
+<div class="notice">
+Os dados ficam armazenados neste navegador. Faça um backup antes de alterar ou trocar de aparelho.
+</div>
+
+<div class="card" style="margin-top:16px">
+<h2>Gerenciamento</h2>
+<button class="btn danger" onclick="deleteAll()">Apagar banco deste aparelho</button>
+</div>`;
 }
 
-/* BACKUP E COMPARTILHAMENTO */
+/* NORMALIZAÇÃO DE PROVAS */
 
-async function exportShare(){
-if(typeof JSZip==="undefined")return avisar("Biblioteca ZIP indisponível.");
-const zip=new JSZip(),meta=[];
-for(const im of imagens){
-let ext=(im.caminho||"imagem.png").split(".").pop().toLowerCase();
-if(!/^(jpg|jpeg|png|webp|gif|svg)$/.test(ext))ext="png";
-const path="imagens/"+im.id.replace(/[^\w-]/g,"_")+"."+ext;
-zip.file(path,im.blob);
-meta.push({id:im.id,provaId:im.provaId,caminho:im.caminho,arquivo:path});
-}
-const publicQs=questoes.map(q=>({...q,minha_resposta:"",situacao:"a_conferir",situacao_manual:false,comentario:"",classificacao_aprovada:false}));
-zip.file("backup.json",JSON.stringify({tipo:"MEUBANCO_BACKUP_V3",versao:3,provas,questoes:publicQs,colecoes:[],imagens:meta,criado:new Date().toISOString()},null,2));
-download(await zip.generateAsync({type:"blob",compression:"DEFLATE"}),"MEUBANCO-PARA-COMPARTILHAR.zip");
+function normalizeProof(p){
+const name=clean(p.nome||p.prova||"Prova");
+const year=p.ano||"";
+
+const id=clean(p.id)||"prova-"+name.toLowerCase()
+.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+.replace(/[^a-z0-9]+/g,"-")+"-"+year;
+
+return {id,nome:name,ano:year};
 }
 
-/* IMPORTAÇÃO INTELIGENTE */
+function broadSub(value){
+const original=clean(value);
+const s=original.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"").toLowerCase();
 
-function normalizedProof(p){
-let nome=clean(p.nome||p.prova||"Prova"),ano=p.ano||"";
-return {id:clean(p.id)||"prova-"+nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-")+"-"+ano,nome,ano};
+if(s.includes("trauma esplenico"))return "Trauma esplênico";
+if(s.includes("anemia")&&s.includes("hemolit"))return "Anemias hemolíticas";
+if(s.includes("anemia"))return "Anemias";
+if(/\bdiabetes\b|\bdm\b/.test(s))return "Diabetes mellitus";
+if(/\bhas\b|hipertensao arterial/.test(s))return "Hipertensão arterial";
+if(/anatomia pelvica|vascularizacao pelvica|pelvimetria/.test(s))return "Anatomia pélvica";
+if(s.includes("endocardite"))return "Endocardite infecciosa";
+
+return original;
 }
-function broadSub(v){
-let s=clean(v),k=s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-if(!k)return "";
-if(/diabetes|\bdm\b/.test(k))return "Diabetes mellitus";
-if(/hipertensao arterial|\bhas\b/.test(k))return "Hipertensão arterial";
-if(/trauma esplenico/.test(k))return "Trauma esplênico";
-if(/anemia.*hemolitic/.test(k))return "Anemias hemolíticas";
-if(/\banemia/.test(k))return "Anemias";
-if(/cuidados perioperatorios/.test(k))return "Cuidados perioperatórios";
-if(/anatomia pelvica|vascularizacao pelvica|nervo pudendo|pelvimetria/.test(k))return "Anatomia pélvica";
-if(/endocardite/.test(k))return "Endocardite infecciosa";
-return s;
+
+function normalizeQuestion(q,p){
+const raw=clean(q.tema_especifico||q.subtema);
+const broad=broadSub(raw);
+
+const answer=clean(
+q.minha_resposta||
+q.resposta_marcada||
+q.resposta_pessoal||
+q.resposta_usuario||
+q.marcada
+).toUpperCase();
+
+let key=clean(q.gabarito||q.gabarito_oficial).toUpperCase();
+
+if(q.anulada===true||isAnnulled(q.situacao)||isAnnulled(key)){
+key="ANULADA";
 }
-function normalizedQ(q,p){
-const raw=clean(q.tema_especifico||q.subtema),broad=broadSub(raw);
-let detail=clean(q.descricao_detalhada||q.detalhamento);
-if(!detail&&raw&&broad!==raw)detail=raw;
-let answer=clean(q.minha_resposta),key=clean(q.gabarito);
-if(q.anulada===true||isAnnulled(q.situacao))key="ANULADA";
-const pre=clean(q.situacao).toLowerCase();
-const status=inferredStatus(answer,key,pre==="nao_fiz"?"nao_fiz":"a_conferir");
+
+const previousStatus=clean(q.situacao).toLowerCase();
+const emptyStatus=previousStatus==="nao_fiz"?"nao_fiz":"a_conferir";
+
 return {
 id:clean(q.id)||p.id+"-q"+(q.numero||q.questao),
 provaId:p.id,
@@ -729,127 +1460,409 @@ alternativas:q.alternativas||{},
 grande_area:clean(q.grande_area||q.area),
 tema_geral:clean(q.tema_geral||q.tema),
 tema_especifico:broad,
-descricao_detalhada:detail,
+descricao_detalhada:clean(
+q.descricao_detalhada||
+q.detalhamento||
+(raw!==broad?raw:"")
+),
 classificacao_aprovada:!!q.classificacao_aprovada,
-situacao:status,
-situacao_manual:false,
-gabarito:key,
 minha_resposta:answer,
+gabarito:key,
+situacao:calculateStatus(answer,key,emptyStatus),
+situacao_manual:false,
 comentario:"",
 imagens:Array.isArray(q.imagens)?q.imagens:[]
 };
 }
-async function importRecords(ps,qs,imgs){
-let duplicates=qs.filter(q=>questoes.some(x=>x.id===q.id));
-let overwrite=false;
-if(duplicates.length)overwrite=confirm(`${duplicates.length} questões já existem.\nOK: substituir registros existentes (incluindo classificações).\nCancelar: manter as existentes e importar só novas.`);
-for(let p of ps)if(overwrite||!provas.some(x=>x.id===p.id))await put("provas",p);
-let allowed=new Set(qs.filter(q=>overwrite||!duplicates.some(x=>x.id===q.id)).map(x=>x.id));
-let paths=new Set(qs.filter(q=>allowed.has(q.id)).flatMap(q=>q.imagens||[]));
-for(let im of imgs)if(paths.has(im.id))await put("imagens",im);
-for(let q of qs)if(allowed.has(q.id))await put("questoes",q);
-await reload();
-avisar(`${allowed.size} questões importadas ou atualizadas.`);
+
+/* CONFERÊNCIA DO ZIP */
+
+function importSummary(list){
+const answers=list.filter(q=>validAnswer(q.minha_resposta)).length;
+const keys=list.filter(q=>
+validAnswer(q.gabarito)||isAnnulled(q.gabarito)
+).length;
+const annulled=list.filter(q=>isAnnulled(q.gabarito)).length;
+const pending=list.filter(q=>q.situacao==="a_conferir").length;
+const missing=list.filter(q=>
+validAnswer(q.gabarito)&&!validAnswer(q.minha_resposta)
+).map(q=>q.numero);
+
+return {
+answers,keys,annulled,pending,missing
+};
 }
-async function importJSON(data,fileName){
-if(data.tipo==="MEUBANCO_BACKUP_V3"||(Array.isArray(data.provas)&&Array.isArray(data.questoes))){
+
+async function importRecords(ps,qs,imgs,collections=[]){
+const s=importSummary(qs);
+
+const message=
+"CONFERÊNCIA ANTES DA IMPORTAÇÃO\n\n"+
+qs.length+" questões\n"+
+s.answers+" respostas pessoais identificadas\n"+
+s.keys+" gabaritos identificados\n"+
+s.annulled+" questões anuladas\n"+
+s.pending+" questões a conferir\n\n"+
+(s.missing.length?
+"Sem resposta pessoal: "+s.missing.slice(0,15).join(", ")+
+(s.missing.length>15?"...":"")+"\n\n":"")+
+"Se você já resolveu a prova e muitas respostas estão ausentes, cancele e peça ao ChatGPT para refazer o ZIP a partir do PDF marcado.\n\n"+
+"Continuar a importação?";
+
+if(!confirm(message))return false;
+
+const existing=new Map(questoes.map(q=>[q.id,q]));
+let created=0,updated=0;
+const allowedImages=new Set();
+
+for(const p of ps){
+if(!provas.some(x=>x.id===p.id))await put("provas",p);
+}
+
+for(const incoming of qs){
+const old=existing.get(incoming.id);
+
+if(!old){
+await put("questoes",incoming);
+(incoming.imagens||[]).forEach(id=>allowedImages.add(id));
+created++;
+continue;
+}
+
+const next={...old};
+
+/* PREENCHE LACUNAS, SEM APAGAR RESPOSTAS JÁ GRAVADAS */
+
+if(!validAnswer(next.minha_resposta)&&validAnswer(incoming.minha_resposta)){
+next.minha_resposta=incoming.minha_resposta;
+}
+
+if(isAnnulled(incoming.gabarito)){
+next.gabarito="ANULADA";
+}else if(!validAnswer(next.gabarito)&&validAnswer(incoming.gabarito)){
+next.gabarito=incoming.gabarito;
+}
+
+if(!next.enunciado&&incoming.enunciado){
+next.enunciado=incoming.enunciado;
+}
+
+if(!Object.keys(next.alternativas||{}).length){
+next.alternativas=incoming.alternativas;
+}
+
+if(!next.classificacao_aprovada){
+for(const field of [
+"grande_area","tema_geral",
+"tema_especifico","descricao_detalhada"
+]){
+if(!next[field]&&incoming[field]){
+next[field]=incoming[field];
+}
+}
+}
+
+next.imagens=[...new Set([
+...(next.imagens||[]),
+...(incoming.imagens||[])
+])];
+
+if(!next.situacao_manual){
+next.situacao=calculateStatus(
+next.minha_resposta,
+next.gabarito,
+next.situacao
+);
+}
+
+next.imagens.forEach(id=>allowedImages.add(id));
+
+await put("questoes",next);
+updated++;
+}
+
+for(const image of imgs){
+if(allowedImages.has(image.id)&&
+!imagens.some(x=>x.id===image.id)){
+await put("imagens",image);
+}
+}
+
+for(const c of collections){
+if(!colecoes.some(x=>x.id===c.id)){
+await put("colecoes",c);
+}
+}
+
+await reload();
+
+alert(
+created+" questões novas.\n"+
+updated+" questões complementadas.\n\n"+
+"Respostas identificadas no ZIP: "+s.answers+"/"+qs.length
+);
+
+return true;
+}
+
+/* IMPORTAÇÃO ZIP / JSON */
+
+async function importJSON(data,name){
+if(data.tipo==="MEUBANCO_BACKUP_V3"||
+(Array.isArray(data.provas)&&Array.isArray(data.questoes))){
 await restore(data);
 return;
 }
-let list=data.questoes||data.questions;
-if(!Array.isArray(list))throw Error("JSON não contém questões.");
-let p=normalizedProof(data.prova||{nome:data.nome||fileName.replace(/\.json$/i,""),ano:data.ano||""});
-await importRecords([p],list.map(q=>normalizedQ(q,p)),[]);
+
+const list=data.questoes||data.questions;
+if(!Array.isArray(list))throw Error("JSON sem questões.");
+
+const p=normalizeProof(data.prova||{
+nome:data.nome||name.replace(/\.json$/i,""),
+ano:data.ano||""
+});
+
+await importRecords(
+[p],
+list.map(q=>normalizeQuestion(q,p)),
+[]
+);
 }
+
 async function importZIP(file){
-if(typeof JSZip==="undefined")throw Error("Biblioteca ZIP indisponível.");
-let zip=await JSZip.loadAsync(file);
-let entry=zip.file("manifest.json")||zip.file("backup.json");
-if(!entry)throw Error("Não encontrei manifest.json nem backup.json na raiz.");
-let data=JSON.parse(await entry.async("string"));
+if(typeof JSZip==="undefined"){
+throw Error("Biblioteca ZIP indisponível.");
+}
+
+const zip=await JSZip.loadAsync(file);
+const manifest=zip.file("manifest.json")||zip.file("backup.json");
+
+if(!manifest){
+throw Error("manifest.json ou backup.json não encontrado na raiz.");
+}
+
+const data=JSON.parse(await manifest.async("string"));
+
 if(data.tipo==="MEUBANCO_BACKUP_V3"){
 await restore(data,zip);
 return;
 }
-if(!Array.isArray(data.questoes))throw Error("Manifesto sem lista de questões.");
-let p=normalizedProof(data.prova||{nome:file.name,ano:""});
-let list=data.questoes.map(q=>normalizedQ(q,p)),imgs=[];
-for(let q of list){
-let names=[];
-for(let path of q.imagens){
-if(typeof path!=="string"||path.startsWith("/")||path.includes(".."))continue;
-let entry=zip.file(path);
+
+if(!Array.isArray(data.questoes)){
+throw Error("O ZIP não contém lista de questões.");
+}
+
+const p=normalizeProof(data.prova||{nome:file.name,ano:""});
+const list=data.questoes.map(q=>normalizeQuestion(q,p));
+const imgs=[];
+
+for(const q of list){
+const ids=[];
+
+for(const path of q.imagens){
+if(typeof path!=="string"||
+path.startsWith("/")||path.includes(".."))continue;
+
+const entry=zip.file(path);
 if(!entry)continue;
-let id=p.id+"::"+path;
-imgs.push({id,provaId:p.id,caminho:path,blob:await entry.async("blob")});
-names.push(id);
+
+const id=p.id+"::"+path;
+
+imgs.push({
+id,provaId:p.id,caminho:path,
+blob:await entry.async("blob")
+});
+
+ids.push(id);
 }
-q.imagens=names;
+
+q.imagens=ids;
 }
+
 await importRecords([p],list,imgs);
 }
+
+/* BACKUP E COMPARTILHAMENTO */
+
+async function makeZIP(personal=true){
+if(typeof JSZip==="undefined"){
+throw Error("Biblioteca ZIP indisponível.");
+}
+
+const zip=new JSZip();
+const meta=[];
+const usedImageIds=new Set(
+questoes.flatMap(q=>q.imagens||[])
+);
+
+for(const im of imagens){
+if(!usedImageIds.has(im.id))continue;
+
+let ext=(im.caminho||"imagem.png").split(".").pop().toLowerCase();
+if(!/^(jpg|jpeg|png|gif|webp|svg)$/.test(ext))ext="png";
+
+const path="imagens/"+im.id.replace(/[^\w-]/g,"_")+"."+ext;
+zip.file(path,im.blob);
+
+meta.push({
+id:im.id,
+provaId:im.provaId,
+caminho:im.caminho,
+arquivo:path
+});
+}
+
+const qs=personal?questoes:questoes.map(q=>({
+...q,
+minha_resposta:"",
+situacao:"a_conferir",
+situacao_manual:false,
+comentario:"",
+classificacao_aprovada:false
+}));
+
+zip.file("backup.json",JSON.stringify({
+tipo:"MEUBANCO_BACKUP_V3",
+versao:3,
+provas,
+questoes:qs,
+colecoes:personal?colecoes:[],
+imagens:meta,
+criado:new Date().toISOString()
+},null,2));
+
+return zip.generateAsync({
+type:"blob",
+compression:"DEFLATE"
+});
+}
+
 async function exportBackup(){
-if(typeof JSZip==="undefined")return avisar("Biblioteca ZIP indisponível.");
-let zip=new JSZip(),meta=[];
-for(let im of imagens){
-let extension=(im.caminho||"imagem.png").split(".").pop().toLowerCase();
-if(!/^(jpg|jpeg|png|webp|gif|svg)$/.test(extension))extension="png";
-let file="imagens/"+im.id.replace(/[^\w-]/g,"_")+"."+extension;
-zip.file(file,im.blob);
-meta.push({id:im.id,provaId:im.provaId,caminho:im.caminho,arquivo:file});
+try{
+download(
+await makeZIP(true),
+"MEUBANCO-BACKUP-"+new Date().toISOString().slice(0,10)+".zip"
+);
+}catch(err){
+alert("Erro no backup: "+err.message);
 }
-zip.file("backup.json",JSON.stringify({tipo:"MEUBANCO_BACKUP_V3",versao:3,provas,questoes,colecoes,imagens:meta,criado:new Date().toISOString()},null,2));
-download(await zip.generateAsync({type:"blob",compression:"DEFLATE"}),"MEUBANCO-BACKUP-"+new Date().toISOString().slice(0,10)+".zip");
 }
+
+async function exportShare(){
+try{
+download(await makeZIP(false),"MEUBANCO-COMPARTILHAR.zip");
+}catch(err){
+alert("Erro ao compartilhar: "+err.message);
+}
+}
+
 async function restore(data,zip){
-if(!Array.isArray(data.questoes))throw Error("Backup inválido");
-let imgs=[];
-if(zip)for(let im of data.imagens||[]){
-let f=zip.file(im.arquivo);
-if(f)imgs.push({id:im.id,provaId:im.provaId,caminho:im.caminho,blob:await f.async("blob")});
+if(!Array.isArray(data.questoes)){
+throw Error("Backup inválido.");
 }
-await importRecords(data.provas||[],data.questoes,imgs);
-for(let c of data.colecoes||[])await put("colecoes",c);
-await reload();
+
+const imgs=[];
+
+if(zip){
+for(const im of data.imagens||[]){
+const entry=zip.file(im.arquivo);
+if(!entry)continue;
+
+imgs.push({
+id:im.id,
+provaId:im.provaId,
+caminho:im.caminho,
+blob:await entry.async("blob")
+});
 }
-async function deleteProof(e){
-let id=dec(e);
-if(!confirm("Excluir esta prova, suas questões e imagens?"))return;
-for(let q of questoes.filter(x=>x.provaId===id))await del("questoes",q.id);
-for(let im of imagens.filter(x=>x.provaId===id))await del("imagens",im.id);
-for(let c of colecoes){
-c.ids=c.ids.filter(qid=>!questoes.some(q=>q.provaId===id&&q.id===qid));
+}
+
+/* O BACKUP PRESERVA O HISTÓRICO EXISTENTE */
+
+await importRecords(
+data.provas||[],
+data.questoes,
+imgs,
+data.colecoes||[]
+);
+}
+
+/* EXCLUSÃO */
+
+async function deleteProof(id){
+const value=dec(id);
+
+if(!confirm("Excluir esta prova e suas questões?"))return;
+
+const ids=new Set(
+questoes.filter(q=>q.provaId===value).map(q=>q.id)
+);
+
+for(const qid of ids)await remove("questoes",qid);
+
+for(const im of imagens.filter(x=>x.provaId===value)){
+await remove("imagens",im.id);
+}
+
+for(const c of colecoes){
+c.ids=c.ids.filter(id=>!ids.has(id));
 await put("colecoes",c);
 }
-await del("provas",id);
+
+await remove("provas",value);
 await reload();
 }
+
 async function deleteAll(){
-if(prompt("Digite APAGAR para excluir todo o banco local:")!=="APAGAR")return;
-for(let t of ["provas","questoes","colecoes","imagens"])await clear(t);
+if(prompt("Digite APAGAR para excluir todos os dados:")!=="APAGAR"){
+return;
+}
+
+for(const table of ["provas","questoes","colecoes","imagens"]){
+await wipe(table);
+}
+
 await reload();
 }
-$("importFile").addEventListener("change",async e=>{
-let files=[...e.target.files];
-e.target.value="";
-for(let f of files){
+
+/* ARQUIVO SELECIONADO */
+
+$("fileInput").addEventListener("change",async event=>{
+const files=[...event.target.files];
+event.target.value="";
+
+for(const file of files){
 try{
-if(/\.zip$/i.test(f.name))await importZIP(f);
-else if(/\.json$/i.test(f.name))await importJSON(JSON.parse(await f.text()),f.name);
-else throw Error("Formato incompatível.");
+if(/\.zip$/i.test(file.name)){
+await importZIP(file);
+}else if(/\.json$/i.test(file.name)){
+await importJSON(
+JSON.parse(await file.text()),
+file.name
+);
+}else{
+throw Error("Formato de arquivo incompatível.");
+}
 }catch(err){
 console.error(err);
-avisar("Não foi possível importar: "+err.message);
+alert("Não foi possível importar: "+err.message);
 }
 }
 });
+
+/* INICIALIZAÇÃO */
+
 (async()=>{
 try{
-db=await abrirDB();
+db=await openDB();
 await reload();
 }catch(err){
 console.error(err);
-$("app").innerHTML="<h2>Não foi possível abrir o armazenamento do navegador.</h2><p>Use o GitHub Pages em HTTPS, fora do modo privado.</p>";
+$("app").innerHTML=`
+<div class="card">
+<h2>Não foi possível abrir o armazenamento.</h2>
+<p>${esc(err.message)}</p>
+</div>`;
 }
 })();
 </script>
