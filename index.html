@@ -1,4 +1,4 @@
- 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,13 +8,17 @@
 <title>MEUBANCO</title>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <style>
-:root{--bg:#f5f7f9;--ink:#253343;--muted:#778596;--line:#e0e6ec;--blue:#285f79;--soft:#edf4f7;--red:#b54848;--green:#207a57}
+:root{
+--bg:#f5f7f9;--ink:#253343;--muted:#778596;
+--line:#e0e6ec;--blue:#285f79;--soft:#eaf3f7;
+--red:#b54848;--green:#207a57
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 button:disabled{opacity:.45;cursor:default}
-header{background:white;border-bottom:1px solid var(--line);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+header{background:white;border-bottom:1px solid var(--line);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:15px}
 .logo{font-size:21px;font-weight:800;letter-spacing:.4px}
 .logo small{display:block;font-size:11px;color:var(--muted);font-weight:400}
 nav{display:flex;gap:5px;overflow:auto}
@@ -23,7 +27,7 @@ nav button.active{background:var(--soft);color:var(--blue);font-weight:700}
 main{max-width:1250px;margin:auto;padding:24px 17px 80px}
 h1{font-size:26px;margin:0 0 5px}
 h2{font-size:19px;margin:0 0 12px}
-h3{font-size:15px;margin:0 0 5px}
+h3{font-size:15px;margin:0}
 p{line-height:1.65}
 .small,.sub{font-size:12px;color:var(--muted)}
 .sub{margin-bottom:22px}
@@ -52,6 +56,7 @@ textarea{min-height:90px;resize:vertical}
 .choices{display:flex;flex-wrap:wrap;gap:7px;max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:10px}
 .choice{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid var(--line);border-radius:20px;color:var(--ink);font-weight:500;margin:0}
 .choice input{accent-color:var(--blue)}
+.choice[hidden]{display:none!important}
 .modal-bg{position:fixed;inset:0;background:#17263791;z-index:20;display:flex;align-items:center;justify-content:center;padding:10px}
 .modal{background:white;width:min(100%,1120px);max-height:96dvh;overflow:auto;border-radius:16px;padding:20px}
 .modal-head{position:sticky;top:-20px;background:white;z-index:3;border-bottom:1px solid var(--line);padding:5px 0 12px;margin-bottom:15px}
@@ -67,8 +72,17 @@ textarea{min-height:90px;resize:vertical}
 .step{border-left:3px solid #a5cbdc;padding-left:18px}
 .stepnumber{font-weight:800;color:var(--blue);font-size:11px;letter-spacing:.06em}
 .hero{background:#fbfdff;border-color:#c3dbe6}
-@media(max-width:850px){header{display:block;padding:13px}nav{margin-top:10px}.grid,.two,.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.modal{padding:14px}.modal-head{top:-14px}.modal-foot{bottom:-14px}}
-@media(max-width:550px){main{padding:16px 11px}.grid,.two,.filters{grid-template-columns:1fr}.modal-bg{padding:4px}.modal{max-height:98dvh}.chartrow{grid-template-columns:100px 1fr 55px}}
+@media(max-width:850px){
+header{display:block;padding:13px}nav{margin-top:10px}
+.grid,.two,.filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+.modal{padding:14px}.modal-head{top:-14px}.modal-foot{bottom:-14px}
+}
+@media(max-width:550px){
+main{padding:16px 11px}
+.grid,.two,.filters{grid-template-columns:1fr}
+.modal-bg{padding:4px}.modal{max-height:98dvh}
+.chartrow{grid-template-columns:100px 1fr 55px}
+}
 </style>
 </head>
 <body>
@@ -77,6 +91,7 @@ textarea{min-height:90px;resize:vertical}
 <div class="logo">MEUBANCO<small>Banco pessoal de questões</small></div>
 <nav id="nav"></nav>
 </header>
+
 <main id="app"></main>
 <div id="modalRoot"></div>
 <input type="file" id="fileInput" accept=".zip,.json" multiple hidden>
@@ -94,34 +109,21 @@ const dec=v=>decodeURIComponent(v);
 const uid=()=>crypto.randomUUID();
 
 const AREAS=[
-"Clínica Médica",
-"Cirurgia Geral",
-"Ginecologia e Obstetrícia",
-"Pediatria",
-"Medicina Preventiva",
-"Outras"
+"Clínica Médica","Cirurgia Geral",
+"Ginecologia e Obstetrícia","Pediatria",
+"Medicina Preventiva","Outras"
 ];
-
 const STATES=["acertei","errei","nao_fiz","anulada","a_conferir"];
 const TABS=[
-["inicio","Início"],
-["provas","Provas"],
-["questoes","Questões"],
-["colecoes","Coleções"],
-["desempenho","Desempenho"],
-["backup","Importar nova prova / Backup"]
+["inicio","Início"],["provas","Provas"],
+["questoes","Questões"],["colecoes","Coleções"],
+["desempenho","Desempenho"],["backup","Importar nova prova / Backup"]
 ];
 
-let db;
-let provas=[];
-let questoes=[];
-let colecoes=[];
-let imagens=[];
-let page="inicio";
-let current=null;
-let navigation=[];
-let imageURLs=[];
+let db,provas=[],questoes=[],colecoes=[],imagens=[];
+let page="inicio",current=null,navigation=[],imageURLs=[];
 let selected=new Set();
+let subSearch="";
 
 let filter={
 provas:[],area:"",tema:"",subs:[],status:"",busca:""
@@ -223,8 +225,6 @@ a_conferir:"A conferir"
 })[s]||"A conferir";
 }
 
-/* ACERTOS AUTOMÁTICOS */
-
 function validAnswer(value){
 const v=clean(value).toUpperCase();
 return /^[A-E]$/.test(v)?v:"";
@@ -236,12 +236,9 @@ return /\bANULAD[AO]\b/i.test(clean(value));
 
 function calculateStatus(answer,key,empty="a_conferir"){
 if(isAnnulled(key))return "anulada";
-
 const a=validAnswer(answer);
 const g=validAnswer(key);
-
 if(a&&g)return a===g?"acertei":"errei";
-
 if(!a&&empty==="nao_fiz")return "nao_fiz";
 return "a_conferir";
 }
@@ -256,10 +253,8 @@ if(!a||!g||!result)return;
 
 const value=calculateStatus(a.value,g.value);
 result.textContent="Resultado automático: "+statusName(value)+
-(manual?.value!=="automatico"?" · Correção manual ativa":"");
+(manual&&manual.value!=="automatico"?" · Correção manual ativa":"");
 }
-
-/* ESTATÍSTICAS */
 
 function stats(list){
 const made=list.filter(q=>
@@ -267,9 +262,7 @@ q.situacao==="acertei"||q.situacao==="errei"
 );
 const right=made.filter(q=>q.situacao==="acertei").length;
 return {
-total:list.length,
-made:made.length,
-right,
+total:list.length,made:made.length,right,
 wrong:made.length-right,
 nao:list.filter(q=>q.situacao==="nao_fiz").length,
 annulled:list.filter(q=>q.situacao==="anulada").length,
@@ -303,45 +296,33 @@ $("nav").innerHTML=TABS.map(([id,name])=>
 ).join("");
 
 $("app").innerHTML=({
-inicio:home,
-provas:proofPage,
-questoes:questionPage,
-colecoes:collectionPage,
-desempenho:performancePage,
-backup:backupPage
+inicio:home,provas:proofPage,questoes:questionPage,
+colecoes:collectionPage,desempenho:performancePage,backup:backupPage
 })[page]();
 }
 
-/* INÍCIO */
+/* INÍCIO E PROVAS */
 
 function home(){
-return heading(
-"Minha biblioteca",
-"Suas provas e questões organizadas por assunto."
-)+metrics(stats(questoes))+`
+return heading("Minha biblioteca","Suas provas e questões organizadas por assunto.")+
+metrics(stats(questoes))+`
 <div class="two">
 <div class="card">
 <h2>Minhas provas</h2>
 ${provas.map(p=>`
 <div class="item row between">
-<div>
-<b>${esc(proofName(p))}</b>
-<div class="small">${questoes.filter(q=>q.provaId===p.id).length} questões</div>
-</div>
+<div><b>${esc(proofName(p))}</b>
+<div class="small">${questoes.filter(q=>q.provaId===p.id).length} questões</div></div>
 <button class="btn" onclick="openProof('${enc(p.id)}')">Abrir</button>
 </div>`).join("")||'<p class="small">Nenhuma prova importada.</p>'}
 </div>
 <div class="card">
 <h2>Importar nova prova</h2>
-<p>Envie seu PDF ao ChatGPT e importe o ZIP com as questões, respostas e gabaritos.</p>
-<button class="btn primary" onclick="go('backup')">
-Importar nova prova →
-</button>
+<p>Envie seu PDF ao ChatGPT e importe o ZIP com questões, respostas e gabaritos.</p>
+<button class="btn primary" onclick="go('backup')">Importar nova prova →</button>
 </div>
 </div>`;
 }
-
-/* PROVAS */
 
 function proofPage(){
 return heading("Provas","Acesse suas questões por prova.")+
@@ -349,10 +330,8 @@ return heading("Provas","Acesse suas questões por prova.")+
 ${provas.map(p=>{
 const s=stats(questoes.filter(q=>q.provaId===p.id));
 return `<div class="item row between">
-<div>
-<h3>${esc(proofName(p))}</h3>
-<div class="small">${s.total} questões · ${s.made} feitas · ${pct(s.rate)} de acertos</div>
-</div>
+<div><h3>${esc(proofName(p))}</h3>
+<div class="small">${s.total} questões · ${s.made} feitas · ${pct(s.rate)} de acertos</div></div>
 <div class="row">
 <button class="btn" onclick="openProof('${enc(p.id)}')">Abrir</button>
 <button class="btn danger" onclick="deleteProof('${enc(p.id)}')">Excluir</button>
@@ -364,10 +343,41 @@ return `<div class="item row between">
 
 function openProof(id){
 filter={provas:[dec(id)],area:"",tema:"",subs:[],status:"",busca:""};
+subSearch="";
 go("questoes");
 }
 
-/* FILTROS DE QUESTÕES */
+/* BUSCA E SELEÇÃO DE SUBTEMAS */
+
+function normalizeSearch(value){
+return String(value??"")
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.toLocaleLowerCase("pt-BR")
+.trim();
+}
+
+function searchSubthemes(value){
+subSearch=value;
+const term=normalizeSearch(value);
+const labels=[...document.querySelectorAll("#subthemeList .choice")];
+let visible=0;
+
+for(const label of labels){
+const matches=(label.dataset.search||"").includes(term);
+label.hidden=!matches;
+if(matches)visible++;
+}
+
+const counter=$("subthemeCount");
+if(counter){
+counter.textContent=
+visible+" de "+labels.length+" subtemas exibidos · "+
+filter.subs.length+" selecionados";
+}
+}
+
+/* FILTROS */
 
 function filtered(){
 return questoes.filter(q=>{
@@ -412,6 +422,7 @@ render();
 
 function clearFilters(){
 filter={provas:[],area:"",tema:"",subs:[],status:"",busca:""};
+subSearch="";
 render();
 }
 
@@ -446,19 +457,21 @@ ${q.descricao_detalhada?`<div class="small">Descrição: ${esc(q.descricao_detal
 
 function questionPage(){
 const list=filtered();
-
 const base=questoes.filter(q=>
 !filter.provas.length||filter.provas.includes(q.provaId));
 
 const themes=base.filter(q=>
-!filter.area||q.grande_area===filter.area)
-.map(q=>q.tema_geral);
+!filter.area||q.grande_area===filter.area).map(q=>q.tema_geral);
 
 const subs=[...new Set(base.filter(q=>
 (!filter.area||q.grande_area===filter.area)&&
 (!filter.tema||q.tema_geral===filter.tema))
 .map(q=>q.tema_especifico).filter(Boolean))]
 .sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+const searchTerm=normalizeSearch(subSearch);
+const visibleCount=subs.filter(s=>
+normalizeSearch(s).includes(searchTerm)).length;
 
 return heading("Banco de questões","Combine provas, áreas e vários subtemas.")+`
 <div class="card">
@@ -500,9 +513,27 @@ onchange="changeFilter('busca',this.value)">
 
 <div class="field">
 <label>Subtemas — marque quantos quiser</label>
-<div class="choices">
-${subs.map(s=>`<label class="choice">
-<input type="checkbox" ${filter.subs.includes(s)?"checked":""}
+
+<input
+type="search"
+id="subthemeSearch"
+value="${esc(subSearch)}"
+placeholder="Buscar subtema, por exemplo: diabetes, anemias..."
+autocomplete="off"
+oninput="searchSubthemes(this.value)"
+style="margin-bottom:9px">
+
+<div class="small" id="subthemeCount" style="margin-bottom:8px">
+${visibleCount} de ${subs.length} subtemas exibidos ·
+${filter.subs.length} selecionados
+</div>
+
+<div class="choices" id="subthemeList">
+${subs.map(s=>`<label class="choice"
+data-search="${esc(normalizeSearch(s))}"
+${normalizeSearch(s).includes(searchTerm)?"":"hidden"}>
+<input type="checkbox"
+${filter.subs.includes(s)?"checked":""}
 onchange="toggleSub('${enc(s)}',this.checked)">
 ${esc(s)}
 </label>`).join("")||'<span class="small">Nenhum subtema.</span>'}
@@ -522,9 +553,12 @@ ${esc(s)}
 <div class="row between">
 <b>${selected.size} selecionadas</b>
 <div class="row">
-<button class="btn" ${selected.size?"":"disabled"} onclick="batchEditor()">Classificar em lote</button>
-<button class="btn" ${selected.size?"":"disabled"} onclick="makeCollection()">Criar coleção</button>
-<button class="btn primary" ${selected.size?"":"disabled"} onclick="copyStudy([...selected])">Copiar para ChatGPT</button>
+<button class="btn" ${selected.size?"":"disabled"}
+onclick="batchEditor()">Classificar em lote</button>
+<button class="btn" ${selected.size?"":"disabled"}
+onclick="makeCollection()">Criar coleção</button>
+<button class="btn primary" ${selected.size?"":"disabled"}
+onclick="copyStudy([...selected])">Copiar para ChatGPT</button>
 </div>
 </div>
 ${list.map(questionRow).join("")||'<div class="empty">Nenhuma questão encontrada.</div>'}
@@ -542,7 +576,7 @@ filtered().forEach(q=>selected.add(q.id));
 render();
 }
 
-/* JANELA DE QUESTÃO */
+/* EDITOR */
 
 function releaseImages(){
 imageURLs.forEach(URL.revokeObjectURL);
@@ -763,7 +797,6 @@ showModal(`
 <h2>Classificação em lote</h2>
 <button class="btn" onclick="closeModal()">Fechar</button>
 </div>
-
 <p class="small">${selected.size} questões selecionadas. Campos vazios não serão alterados.</p>
 
 <div class="field">
@@ -908,13 +941,11 @@ showModal(`
 <h2>${esc(c.nome)}</h2>
 <button class="btn" onclick="closeModal()">Fechar</button>
 </div>
-
 <div class="row">
 <button class="btn primary" onclick="copyCollection('${enc(c.id)}')">
 Copiar para ChatGPT
 </button>
 </div>
-
 ${list.map(q=>`<div class="item row between">
 <div>
 <b>${esc(titleQ(q))}</b>
@@ -1002,8 +1033,7 @@ onclick="openReportGroup('${field}','${enc(g.name)}')">
 </div>
 <div class="bar"><div class="fill" style="width:${g.rate||0}%"></div></div>
 <b>${pct(g.rate)}</b>
-</div>
-`).join("")||'<p class="small">Nenhum dado.</p>'}
+</div>`).join("")||'<p class="small">Nenhum dado.</p>'}
 </div>`;
 }
 
@@ -1026,17 +1056,14 @@ showModal(`
 <h2>${esc(title)}</h2>
 <button class="btn" onclick="closeModal()">Fechar</button>
 </div>
-
 <div class="notice">
 ${list.length} questões · ${s.made} feitas ·
 ${s.right} acertos · ${s.wrong} erros · ${pct(s.rate)}
 </div>
-
 <div class="row" style="margin:15px 0">
 <button class="btn primary" onclick="showReportErrors()">Ver somente erros</button>
 <button class="btn" onclick="copyStudy(reportModalIds)">Copiar para ChatGPT</button>
 </div>
-
 ${list.map(q=>`<div class="item row between">
 <div>
 <b>${esc(titleQ(q))}</b>
@@ -1102,12 +1129,10 @@ ${esc(proofName(p))}
 <select onchange="changeReport('area',this.value)">
 ${options([...AREAS,...questoes.map(q=>q.grande_area)],report.area)}
 </select></div>
-
 <div><label>Tema geral</label>
 <select onchange="changeReport('tema',this.value)">
 ${options(themes,report.tema)}
 </select></div>
-
 <div><label>Descrição detalhada</label>
 <select onchange="changeReport('detail',this.value)">
 ${options(details,report.detail)}
@@ -1148,10 +1173,12 @@ Questões anuladas, não feitas e a conferir ficam fora do cálculo.
 <div class="row between">
 <h2>Questões do relatório</h2>
 <div class="row">
-<button class="btn" onclick="showReportQuestions(reportList(),'Todas as questões')">
+<button class="btn"
+onclick="showReportQuestions(reportList(),'Todas as questões')">
 Ver todas (${list.length})
 </button>
-<button class="btn primary" onclick="showReportQuestions(reportList().filter(q=>q.situacao==='errei'),'Erros')">
+<button class="btn primary"
+onclick="showReportQuestions(reportList().filter(q=>q.situacao==='errei'),'Erros')">
 Ver erros (${s.wrong})
 </button>
 <button class="btn" onclick="exportCSV()">Exportar CSV</button>
@@ -1198,10 +1225,8 @@ const csv="\ufeff"+rows.map(row=>
 row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")
 ).join("\n");
 
-download(
-new Blob([csv],{type:"text/csv;charset=utf-8"}),
-"MEUBANCO-RELATORIO.csv"
-);
+download(new Blob([csv],{type:"text/csv;charset=utf-8"}),
+"MEUBANCO-RELATORIO.csv");
 }
 
 /* PROMPT PREPARADOR */
@@ -1242,8 +1267,6 @@ Se forem diferentes, situacao=errei.
 Se o gabarito oficial disser ANULADA, situacao=anulada.
 Se houver evidência de resposta não marcada, situacao=nao_fiz.
 Se a leitura for incerta, situacao=a_conferir.
-
-NUNCA marque todas as questões como a_conferir quando as respostas pessoais estão identificáveis.
 
 ANTES DE ENTREGAR:
 Confira quantas respostas pessoais, gabaritos e anulações foram extraídos.
@@ -1314,18 +1337,11 @@ Confira se o ZIP contém todas as questões e alternativas, os gabaritos correto
 Entregue o ZIP pronto para importar no MEUBANCO.`;
 }
 
-/* PÁGINA DE IMPORTAÇÃO */
+/* IMPORTAR NOVA PROVA */
 
 function startProof(){
-const text=zipPrompt();
-
-navigator.clipboard.writeText(text).then(()=>{
-alert("Instruções copiadas. Cole no ChatGPT e anexe sua prova em PDF.");
-}).catch(()=>{
-showPrompt();
-});
-
 window.open("https://chatgpt.com/","_blank","noopener");
+copyText(zipPrompt());
 }
 
 function showPrompt(){
@@ -1337,7 +1353,8 @@ showModal(`
 <textarea style="height:370px">${esc(zipPrompt())}</textarea>
 <div class="row">
 <button class="btn primary" onclick="copyText(zipPrompt())">Copiar instruções</button>
-<button class="btn" onclick="window.open('https://chatgpt.com/','_blank')">Abrir ChatGPT</button>
+<button class="btn"
+onclick="window.open('https://chatgpt.com/','_blank')">Abrir ChatGPT</button>
 </div>
 `);
 }
@@ -1363,7 +1380,7 @@ Copiar instruções
 Ver instruções
 </button>
 </div>
-<p class="small">O ChatGPT abre em outra página. Cole as instruções copiadas e anexe o PDF. O aplicativo instalado pode não abrir automaticamente.</p>
+<p class="small">O ChatGPT abre em outra página. Cole as instruções copiadas e anexe o PDF.</p>
 </div>
 </div>
 
@@ -1394,30 +1411,26 @@ Selecionar ZIP da prova
 <div class="notice">
 Os dados ficam armazenados neste navegador. Faça um backup antes de alterar ou trocar de aparelho.
 </div>
-
 <div class="card" style="margin-top:16px">
 <h2>Gerenciamento</h2>
 <button class="btn danger" onclick="deleteAll()">Apagar banco deste aparelho</button>
 </div>`;
 }
 
-/* NORMALIZAÇÃO DE PROVAS */
+/* NORMALIZAÇÃO */
 
 function normalizeProof(p){
 const name=clean(p.nome||p.prova||"Prova");
 const year=p.ano||"";
-
 const id=clean(p.id)||"prova-"+name.toLowerCase()
 .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
 .replace(/[^a-z0-9]+/g,"-")+"-"+year;
-
 return {id,nome:name,ano:year};
 }
 
 function broadSub(value){
 const original=clean(value);
-const s=original.normalize("NFD")
-.replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const s=normalizeSearch(original);
 
 if(s.includes("trauma esplenico"))return "Trauma esplênico";
 if(s.includes("anemia")&&s.includes("hemolit"))return "Anemias hemolíticas";
@@ -1475,7 +1488,7 @@ imagens:Array.isArray(q.imagens)?q.imagens:[]
 };
 }
 
-/* CONFERÊNCIA DO ZIP */
+/* CONFERÊNCIA ANTES DE IMPORTAR */
 
 function importSummary(list){
 const answers=list.filter(q=>validAnswer(q.minha_resposta)).length;
@@ -1488,9 +1501,7 @@ const missing=list.filter(q=>
 validAnswer(q.gabarito)&&!validAnswer(q.minha_resposta)
 ).map(q=>q.numero);
 
-return {
-answers,keys,annulled,pending,missing
-};
+return {answers,keys,annulled,pending,missing};
 }
 
 async function importRecords(ps,qs,imgs,collections=[]){
@@ -1530,8 +1541,6 @@ continue;
 }
 
 const next={...old};
-
-/* PREENCHE LACUNAS, SEM APAGAR RESPOSTAS JÁ GRAVADAS */
 
 if(!validAnswer(next.minha_resposta)&&validAnswer(incoming.minha_resposta)){
 next.minha_resposta=incoming.minha_resposta;
@@ -1576,7 +1585,6 @@ next.situacao
 }
 
 next.imagens.forEach(id=>allowedImages.add(id));
-
 await put("questoes",next);
 updated++;
 }
@@ -1605,7 +1613,7 @@ updated+" questões complementadas.\n\n"+
 return true;
 }
 
-/* IMPORTAÇÃO ZIP / JSON */
+/* IMPORTAÇÃO ZIP E JSON */
 
 async function importJSON(data,name){
 if(data.tipo==="MEUBANCO_BACKUP_V3"||
@@ -1622,11 +1630,7 @@ nome:data.nome||name.replace(/\.json$/i,""),
 ano:data.ano||""
 });
 
-await importRecords(
-[p],
-list.map(q=>normalizeQuestion(q,p)),
-[]
-);
+await importRecords([p],list.map(q=>normalizeQuestion(q,p)),[]);
 }
 
 async function importZIP(file){
@@ -1777,8 +1781,6 @@ blob:await entry.async("blob")
 }
 }
 
-/* O BACKUP PRESERVA O HISTÓRICO EXISTENTE */
-
 await importRecords(
 data.provas||[],
 data.questoes,
@@ -1824,8 +1826,6 @@ await wipe(table);
 
 await reload();
 }
-
-/* ARQUIVO SELECIONADO */
 
 $("fileInput").addEventListener("change",async event=>{
 const files=[...event.target.files];
